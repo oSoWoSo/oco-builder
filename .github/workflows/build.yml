@@ -22,22 +22,41 @@ jobs:
           - { name: aarch64,     libc: glibc, runner: ubuntu-24.04-arm }
 
     steps:
-      - uses: actions/checkout@v5
-
       - name: Log in to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: Dockerfile
-          push: true
-          build-args: LIBC=${{ matrix.libc }}
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/void-bootstrap-${{ matrix.name }}:latest
-            ghcr.io/${{ github.repository_owner }}/void-bootstrap-${{ matrix.name }}:${{ github.run_id }}
+      - name: Build bootstrap
+        run: |
+          docker rm -f bootstrap 2>/dev/null || true
+          docker run --privileged --name bootstrap \
+            ghcr.io/void-linux/void-${{ matrix.libc }}-full:latest \
+            bash -c "
+              set -e
+              mkdir -p /etc/xbps.d
+              cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
+              sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
+              xbps-install -Syu xbps
+              xbps-install -yu
+              xbps-install -y sudo bash curl git
+              useradd -G xbuilder -M builder
+              git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
+              chown -R builder:builder /void-packages
+              cd /void-packages
+              sudo -Eu builder common/travis/set_mirror.sh
+              sudo -Eu builder common/travis/prepare.sh
+              common/travis/fetch-xtools.sh
+              chown -R builder:builder .
+              rm -rf hostdir/sources/* masterdir-*/var/cache/xbps/*
+            "
+
+      - name: Commit and push
+        run: |
+          IMAGE="ghcr.io/osowoso/oco-builder-${{ matrix.name }}"
+          docker commit --change='WORKDIR /void-packages' bootstrap "${IMAGE}:latest"
+          docker tag "${IMAGE}:latest" "${IMAGE}:${{ github.run_id }}"
+          docker push "${IMAGE}:latest"
+          docker push "${IMAGE}:${{ github.run_id }}"
