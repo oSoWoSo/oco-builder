@@ -1,0 +1,6 @@
+# Exclude everything except needed
+/*
+!/.gitignore
+!/.github
+!/README.md
+!/bootstrap.sh
