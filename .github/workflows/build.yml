@@ -34,7 +34,7 @@ jobs:
           docker rm -f bootstrap 2>/dev/null || true
           docker run --privileged --name bootstrap \
             ghcr.io/void-linux/void-${{ matrix.libc }}-full:latest \
-            bash -c "
+            sh -c "
               set -e
               mkdir -p /etc/xbps.d
               cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
