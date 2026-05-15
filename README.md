@@ -24,3 +24,12 @@ docker run --privileged --rm ghcr.io/osowoso/oco-builder-x86_64 \
 ## How it works
 
 Each image starts from the official `ghcr.io/void-linux/void-*-full` base, runs `xbps-src binary-bootstrap` with `--privileged` (required for chroot mount capabilities), then is committed as a ready-to-use build environment.
+
+## Bundled tools
+
+In addition to the void base + `xbps-src`, the images include:
+
+- `sudo`, `bash`, `curl`, `git` -- core build needs
+- `pandoc` -- README → HTML for the oco website generator
+- `python3` -- runtime for repodata helpers in `oSoWoSo/oco`
+- `zstd` -- CLI for round-tripping zstd-compressed repodata

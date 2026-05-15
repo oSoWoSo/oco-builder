@@ -41,7 +41,12 @@ jobs:
               sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
               xbps-install -Syu xbps
               xbps-install -yu
-              xbps-install -y sudo bash curl git
+              # Core build tools + extras needed by the oco repo workflows:
+              #   pandoc  -- README.md -> HTML for the website
+              #   python3 -- repodata-strip.py and other helpers
+              #   zstd    -- zstd CLI for repodata round-tripping
+              # nodejs is already present (used by GitHub Actions in containers)
+              xbps-install -y sudo bash curl git pandoc python3 zstd
               useradd -G xbuilder -M builder
               git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
               chown -R builder:builder /void-packages
