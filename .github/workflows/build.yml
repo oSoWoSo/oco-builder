@@ -42,11 +42,14 @@ jobs:
               xbps-install -Syu xbps
               xbps-install -yu
               # Core build tools + extras needed by the oco repo workflows:
-              #   pandoc  -- README.md -> HTML for the website
               #   python3 -- repodata-strip.py and other helpers
               #   zstd    -- zstd CLI for repodata round-tripping
-              # nodejs is already present (used by GitHub Actions in containers)
-              xbps-install -y sudo bash curl git pandoc python3 zstd
+              # nodejs is already present (used by GitHub Actions in containers).
+              xbps-install -y sudo bash curl git python3 zstd
+              # pandoc (README.md -> HTML) only on x86_64-glibc: that's the
+              # image used by oco's `pages` job. Haskell-based, not always
+              # built for less common archs (aarch64 in particular).
+              ${{ matrix.name == 'x86_64' && 'xbps-install -y pandoc' || 'true' }}
               useradd -G xbuilder -M builder
               git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
               chown -R builder:builder /void-packages
