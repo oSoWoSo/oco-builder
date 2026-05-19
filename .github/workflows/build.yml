@@ -44,8 +44,8 @@ jobs:
               # Core build tools + extras needed by the oco repo workflows:
               #   python3 -- repodata-strip.py and other helpers
               #   zstd    -- zstd CLI for repodata round-tripping
-              # nodejs is already present (used by GitHub Actions in containers).
-              xbps-install -y sudo bash curl git python3 zstd
+              #   rclone  -- WebDAV mount of binpkgs (repo.osowoso.org/_webdav/)
+              xbps-install -y sudo bash curl git python3 rclone zstd
               # pandoc (README.md -> HTML) only on x86_64-glibc: that's the
               # image used by oco's `pages` job. Haskell-based, not always
               # built for less common archs (aarch64 in particular).
