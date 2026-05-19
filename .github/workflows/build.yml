@@ -17,9 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { name: x86_64,      libc: glibc, runner: ubuntu-latest    }
-          - { name: x86_64-musl, libc: musl,  runner: ubuntu-latest    }
-          - { name: aarch64,     libc: glibc, runner: ubuntu-24.04-arm }
+          - { name: x86_64,      libc: glibc, runner: ubuntu-latest }
+          - { name: x86_64-musl, libc: musl,  runner: ubuntu-latest }
+          - { name: aarch64,      libc: glibc, runner: ubuntu-24.04-arm }
+          - { name: aarch64-musl, libc: musl,  runner: ubuntu-24.04-arm }
 
     steps:
       - name: Log in to GHCR
