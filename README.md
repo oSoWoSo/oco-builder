@@ -13,6 +13,7 @@ Published to GHCR, updated daily at 03:00 UTC.
 | `ghcr.io/osowoso/oco-builder-x86_64` | x86\_64 | glibc |
 | `ghcr.io/osowoso/oco-builder-x86_64-musl` | x86\_64 | musl |
 | `ghcr.io/osowoso/oco-builder-aarch64` | aarch64 | glibc |
+| `ghcr.io/osowoso/oco-builder-aarch64-musl` | aarch64 | musl |
 
 ## Usage
 
@@ -31,5 +32,7 @@ In addition to the void base + `xbps-src`, the images include:
 
 - `sudo`, `bash`, `curl`, `git` -- core build needs
 - `python3` -- runtime for repodata helpers in `oSoWoSo/oco`
+- `rclone` -- manage files on cloud storage
+- `fuse3` -- filesystem in userspace
 - `zstd` -- CLI for round-tripping zstd-compressed repodata
 - `pandoc` -- README → HTML for the oco website generator (x86\_64 only; not packaged for all archs in void)
