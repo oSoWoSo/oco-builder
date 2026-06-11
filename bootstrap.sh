@@ -37,12 +37,29 @@ XBPS_UPDATE_CHECK_VERBOSE=yes
 EOF
 
 echo "repository=${OCO_REPO}" > /etc/xbps.d/oco.conf
-echo y | xbps-install -S
+
+mkdir -p /var/db/xbps/keys
+curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
+	-o /var/db/xbps/keys/oco-repo-key.plist 2>/dev/null || \
+curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist" \
+	-o /var/db/xbps/keys/oco-repo-key.plist 2>/dev/null || true
+
+xbps_install_retry() {
+	local max=3 delay=5 i
+	for i in $(seq 1 $max); do
+		echo "==> xbps-install -S -y (attempt $i/$max)"
+		xbps-install -S -y && return 0
+		[ "$i" -lt "$max" ] && sleep "$delay"
+	done
+	return 1
+}
+xbps_install_retry
 
 for md in /void-packages/masterdir-*/; do
 	[ -d "$md" ] || continue
 	mkdir -p "${md}etc/xbps.d" "${md}var/db/xbps/keys"
 	cp /var/db/xbps/keys/*.plist "${md}var/db/xbps/keys/"
+	[ -f /var/db/xbps/keys/oco-repo-key.plist ] && cp /var/db/xbps/keys/oco-repo-key.plist "${md}var/db/xbps/keys/"
 	echo "repository=${OCO_REPO}" > "${md}etc/xbps.d/oco.conf"
 done
 
