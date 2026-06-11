@@ -44,9 +44,9 @@ jobs:
 
               mkdir -p /var/db/xbps/keys
               curl -fsSL 'https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist' \
-                -o /var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist 2>/dev/null || \
+                -o /var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist || \
               curl -fsSL 'https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist' \
-                -o /var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist 2>/dev/null
+                -o /var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist
 
               xbps-install -Syu xbps
               xbps-install -yu
