@@ -62,7 +62,6 @@ jobs:
               # Configure oco repo and key in host and masterdirs
               OCO_REPO=\"https://repo.osowoso.org/${{ matrix.name }}\"
               echo \"repository=\${OCO_REPO}\" > /etc/xbps.d/oco.conf
-              xbps-install -S -y
 
               for md in /void-packages/masterdir-*/; do
                 [ -d \"\$md\" ] || continue
@@ -70,6 +69,8 @@ jobs:
                 cp /var/db/xbps/keys/*.plist \"\${md}var/db/xbps/keys/\"
                 echo \"repository=\${OCO_REPO}\" > \"\${md}etc/xbps.d/oco.conf\"
               done
+
+              echo y | xbps-install -S
 
               chown -R builder:builder .
               rm -rf hostdir/sources/* masterdir-*/var/cache/xbps/*
