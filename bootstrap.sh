@@ -39,10 +39,10 @@ EOF
 echo "repository=${OCO_REPO}" > /etc/xbps.d/oco.conf
 
 mkdir -p /var/db/xbps/keys
-curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
-	-o /var/db/xbps/keys/oco-repo-key.plist 2>/dev/null || \
 curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist" \
-	-o /var/db/xbps/keys/oco-repo-key.plist 2>/dev/null || true
+	-o /var/db/xbps/keys/oco-repo-key.plist ||
+ curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
+	-o /var/db/xbps/keys/oco-repo-key.plist
 
 xbps_install_retry() {
 	local max=3 delay=5 i

@@ -41,6 +41,13 @@ jobs:
               mkdir -p /etc/xbps.d
               cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
               sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
+
+              mkdir -p /var/db/xbps/keys
+              curl -fsSL 'https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist' \
+                -o /var/db/xbps/keys/oco-repo-key.plist 2>/dev/null || \
+              curl -fsSL 'https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist' \
+                -o /var/db/xbps/keys/oco-repo-key.plist 2>/dev/null || true
+
               xbps-install -Syu xbps
               xbps-install -yu
               xbps-install -y sudo bash curl fuse3 git python3 rclone rsync xtools zstd
@@ -52,6 +59,19 @@ jobs:
               sudo -Eu builder common/travis/set_mirror.sh
               sudo -Eu builder common/travis/prepare.sh
               common/travis/fetch-xtools.sh
+
+              # Configure oco repo and key in host and masterdirs
+              OCO_REPO=\"https://repo.osowoso.org/${{ matrix.name }}\"
+              echo \"repository=\${OCO_REPO}\" > /etc/xbps.d/oco.conf
+              xbps-install -S -y || true
+
+              for md in /void-packages/masterdir-*/; do
+                [ -d \"\$md\" ] || continue
+                mkdir -p \"\${md}etc/xbps.d\" \"\${md}var/db/xbps/keys\"
+                cp /var/db/xbps/keys/*.plist \"\${md}var/db/xbps/keys/\"
+                echo \"repository=\${OCO_REPO}\" > \"\${md}etc/xbps.d/oco.conf\"
+              done
+
               chown -R builder:builder .
               rm -rf hostdir/sources/* masterdir-*/var/cache/xbps/*
             "
