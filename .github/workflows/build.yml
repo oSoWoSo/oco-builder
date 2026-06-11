@@ -45,6 +45,11 @@ jobs:
               xbps-install -Syu xbps
               xbps-install -yu
               xbps-install -y sudo bash curl fuse3 git python3 rclone rsync xtools zstd
+              mkdir -p /var/db/xbps/keys
+              curl -fsSL 'https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist' \
+                -o /var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist || \
+              curl -fsSL 'https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist' \
+                -o /var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist
               ${{ matrix.name == 'x86_64' && 'xbps-install -y pandoc' || 'true' }}
               useradd -G xbuilder -M builder
               git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
@@ -53,12 +58,6 @@ jobs:
               sudo -Eu builder common/travis/set_mirror.sh
               sudo -Eu builder common/travis/prepare.sh
               common/travis/fetch-xtools.sh
-
-              mkdir -p /var/db/xbps/keys
-              curl -fsSL 'https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist' \
-                -o /var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist || \
-              curl -fsSL 'https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist' \
-                -o /var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist
 
               # Configure oco repo and key in host and masterdirs
               OCO_REPO=\"https://repo.osowoso.org/${{ matrix.name }}\"
