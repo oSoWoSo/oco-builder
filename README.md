@@ -1,8 +1,8 @@
 # oco-builder
 
-Bootstrap Docker images for building binary packages for [repo.osowoso.org](https://repo.osowoso.org/) — the binary repository of [Void Community Repository](https://codeberg.org/oSoWoSo/oco) (VUR).
+Bootstrap Docker images for building binary packages for [repo.osowoso.org](https://repo.osowoso.org/)
 
-Templates live at [codeberg.org/oSoWoSo/oco](https://codeberg.org/oSoWoSo/oco), binaries are built via CI at [github.com/oSoWoSo/Void_Community_Repository](https://github.com/oSoWoSo/Void_Community_Repository) using these images.
+Templates live at [OCO](https://codeberg.org/oSoWoSo/oco), binaries are built via CI on [GitHub](https://github.com/oSoWoSo/vOid_Community_repOsitory) using these images.
 
 ## Images
 
