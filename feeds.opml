@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0" xmlns:miniflux="https://miniflux.app/opml">
+    <head>
+        <title>Miniflux</title>
+        <dateCreated>Tue, 08 Sep 2026 04:05:35 UTC</dateCreated>
+    </head>
+    <body>
+        <outline text="All">
+        <outline text="package-update">
+            <outline title="BoxBuddyRS" text="BoxBuddyRS" xmlUrl="https://github.com/Dvlv/BoxBuddyRS/tags.atom" htmlUrl="https://github.com/Dvlv/BoxBuddyRS/releases" type="rss"></outline>
+            <outline title="brave-browser" text="brave-browser" xmlUrl="https://github.com/brave/brave-browser/tags.atom" htmlUrl="https://github.com/brave/brave-browser/releases" miniflux:blocklistRules="EntryTitle=(?i)Nightly" miniflux:keeplistRules="EntryTitle=(?i)Release" type="rss"></outline>
+            <outline title="brow6el" text="brow6el" xmlUrl="https://tangled.org/janantos.tngl.sh/brow6el/feed.atom?include=tags" htmlUrl="https://tangled.org/janantos.tngl.sh/brow6el" description="Web browser for the terminal using Chromium (CEF) with support for Sixel and Kitty graphics protocols" type="rss"></outline>
+            <outline title="BSSG" text="BSSG" xmlUrl="https://brew.bsd.cafe/stefano/BSSG/tags.rss" htmlUrl="https://brew.bsd.cafe/stefano/BSSG/tags" description="BSSG - Bash Static Site Generator. A simple, efficient, and portable SSG written entirely in Bash. Converts Markdown posts/pages into static HTML sites with RSS, sitemaps, tags, archives, and easy CSS theming. Runs on Linux, macOS, and BSDs." type="rss"></outline>
+            <outline title="bulletty" text="bulletty" xmlUrl="https://github.com/crocidb/bulletty/tags.atom" htmlUrl="https://github.com/crocidb/bulletty/releases" miniflux:blockFilterEntryRules="EntryTitle=(?i)Nightly" type="rss"></outline>
+            <outline title="cc-switch" text="cc-switch" xmlUrl="https://github.com/farion1231/cc-switch/tags.atom" htmlUrl="https://github.com/farion1231/cc-switch/releases" type="rss"></outline>
+            <outline title="cliamp" text="cliamp" xmlUrl="https://github.com/bjarneo/cliamp/tags.atom" htmlUrl="https://github.com/bjarneo/cliamp/releases" type="rss"></outline>
+            <outline title="clitest" text="clitest" xmlUrl="https://github.com/aureliojargas/clitest/tags.atom" htmlUrl="https://github.com/aureliojargas/clitest/releases" type="rss"></outline>
+            <outline title="corekeyboard tags" text="corekeyboard tags" xmlUrl="https://gitlab.com/cubocore/coreapps/corekeyboard/-/tags?format=atom" htmlUrl="https://gitlab.com/cubocore/coreapps/corekeyboard/-/tags" type="rss"></outline>
+            <outline title="cosign" text="cosign" xmlUrl="https://github.com/sigstore/cosign/tags.atom" htmlUrl="https://github.com/sigstore/cosign/releases" type="rss"></outline>
+            <outline title="crush" text="crush" xmlUrl="https://github.com/charmbracelet/crush/tags.atom" htmlUrl="https://github.com/charmbracelet/crush/releases" type="rss"></outline>
+            <outline title="cwal" text="cwal" xmlUrl="https://github.com/nitinbhat972/cwal/tags.atom" htmlUrl="https://github.com/nitinbhat972/cwal/releases" type="rss"></outline>
+            <outline title="dankcalendar" text="dankcalendar" xmlUrl="https://github.com/AvengeMedia/dankcalendar/tags.atom" htmlUrl="https://github.com/AvengeMedia/dankcalendar/releases" type="rss"></outline>
+            <outline title="dashy" text="dashy" xmlUrl="https://github.com/lissy93/dashy/tags.atom" htmlUrl="https://github.com/lissy93/dashy/releases" type="rss"></outline>
+            <outline title="devedeng" text="devedeng" xmlUrl="https://gitlab.com/rastersoft/devedeng/-/tags?format=atom" htmlUrl="https://gitlab.com/rastersoft/devedeng/-/tags" type="rss"></outline>
+            <outline title="distrobox" text="distrobox" xmlUrl="https://github.com/89luca89/distrobox/tags.atom" htmlUrl="https://github.com/89luca89/distrobox/releases" miniflux:blockFilterEntryRules="EntryTitle=rc" type="rss"></outline>
+            <outline title="drako" text="drako" xmlUrl="https://github.com/lucky7xz/drako/tags.atom" htmlUrl="https://github.com/lucky7xz/drako/releases" type="rss"></outline>
+            <outline title="easybashgui" text="easybashgui" xmlUrl="https://github.com/BashGui/easybashgui/tags.atom" htmlUrl="https://github.com/BashGui/easybashgui/releases" type="rss"></outline>
+            <outline title="faugus-launcher" text="faugus-launcher" xmlUrl="https://github.com/Faugus/faugus-launcher/tags.atom" htmlUrl="https://github.com/Faugus/faugus-launcher/releases" type="rss"></outline>
+            <outline title="fluxer" text="fluxer" xmlUrl="https://github.com/fluxerapp/fluxer/tags.atom" htmlUrl="https://github.com/fluxerapp/fluxer/releases" miniflux:blockFilterEntryRules="EntryTitle=(?i)fluxer-app" type="rss"></outline>
+            <outline title="flyline" text="flyline" xmlUrl="https://github.com/HalFrgrd/flyline/tags.atom" htmlUrl="https://github.com/HalFrgrd/flyline/releases" type="rss"></outline>
+            <outline title="forgejo-runner" text="forgejo-runner" xmlUrl="https://code.forgejo.org/forgejo/runner/tags.rss" htmlUrl="https://code.forgejo.org/forgejo/runner/tags" description="A daemon that connects to a Forgejo instance and runs jobs for continuous integration. The installation and usage instructions are part of the Forgejo documentation" type="rss"></outline>
+            <outline title="FreeTube" text="FreeTube" xmlUrl="https://github.com/FreeTubeApp/FreeTube/tags.atom" htmlUrl="https://github.com/FreeTubeApp/FreeTube/releases" type="rss"></outline>
+            <outline title="FTXUI" text="FTXUI" xmlUrl="https://github.com/ArthurSonzogni/FTXUI/tags.atom" htmlUrl="https://github.com/ArthurSonzogni/FTXUI/releases" type="rss"></outline>
+            <outline title="gama" text="gama" xmlUrl="https://github.com/termkit/gama/tags.atom" htmlUrl="https://github.com/termkit/gama/releases" type="rss"></outline>
+            <outline title="gh-dash" text="gh-dash" xmlUrl="https://github.com/dlvhdr/gh-dash/tags.atom" htmlUrl="https://github.com/dlvhdr/gh-dash/releases" type="rss"></outline>
+            <outline title="gh-lazy" text="gh-lazy" xmlUrl="https://github.com/gizmo385/gh-lazy/tags.atom" htmlUrl="https://github.com/gizmo385/gh-lazy/releases" type="rss"></outline>
+            <outline title="ghgrab" text="ghgrab" xmlUrl="https://github.com/abhixdd/ghgrab/tags.atom" htmlUrl="https://github.com/abhixdd/ghgrab/releases" type="rss"></outline>
+            <outline title="glaze" text="glaze" xmlUrl="https://github.com/stephenberry/glaze/tags.atom" htmlUrl="https://github.com/stephenberry/glaze/releases" type="rss"></outline>
+            <outline title="Gofer" text="Gofer" xmlUrl="https://codeberg.org/JakeAtLinux/Gofer/tags.rss" htmlUrl="https://codeberg.org/JakeAtLinux/Gofer/tags" description="A fast, minimal application launcher for Wayland or X11 written in pure Go. Zero C dependencies, single static binary." type="rss"></outline>
+            <outline title="guile-fibers" text="guile-fibers" xmlUrl="https://codeberg.org/guile/fibers/tags.rss" htmlUrl="https://codeberg.org/guile/fibers/tags" description="Concurrent ML-like concurrency for Guile" type="rss"></outline>
+            <outline title="gum" text="gum" xmlUrl="https://github.com/charmbracelet/gum/tags.atom" htmlUrl="https://github.com/charmbracelet/gum/releases" type="rss"></outline>
+            <outline title="gum-panel" text="gum-panel" xmlUrl="https://codeberg.org/oSoWoSo/gum/tags.rss" htmlUrl="https://codeberg.org/oSoWoSo/gum/tags" description="Tool for glamorous shell scripts" type="rss"></outline>
+            <outline title="helium-browser" text="helium-browser" xmlUrl="https://github.com/imputnet/helium/tags.atom" htmlUrl="https://github.com/imputnet/helium/releases" type="rss"></outline>
+            <outline title="hister" text="hister" xmlUrl="https://github.com/asciimoo/hister/tags.atom" htmlUrl="https://github.com/asciimoo/hister/releases" type="rss"></outline>
+            <outline title="Jan AI" text="Jan AI" xmlUrl="https://github.com/janhq/jan/tags.atom" htmlUrl="https://github.com/janhq/jan/releases" type="rss"></outline>
+            <outline title="kando" text="kando" xmlUrl="https://github.com/kando-menu/kando/tags.atom" htmlUrl="https://github.com/kando-menu/kando/releases" type="rss"></outline>
+            <outline title="lazyrsync" text="lazyrsync" xmlUrl="https://github.com/westpoint-io/lazyrsync/tags.atom" htmlUrl="https://github.com/westpoint-io/lazyrsync/releases" type="rss"></outline>
+            <outline title="librewolf" text="librewolf" xmlUrl="https://librewolf.dev/librewolf/source/tags.rss" htmlUrl="https://librewolf.dev/librewolf/source/tags" description="LibreWolf - Source Archive" type="rss"></outline>
+            <outline title="llmfit" text="llmfit" xmlUrl="https://github.com/AlexsJones/llmfit/tags.atom" htmlUrl="https://github.com/AlexsJones/llmfit/releases" type="rss"></outline>
+            <outline title="logseq" text="logseq" xmlUrl="https://github.com/logseq/logseq/tags.atom" htmlUrl="https://github.com/logseq/logseq/releases" type="rss"></outline>
+            <outline title="lycan" text="lycan" xmlUrl="https://github.com/tutkuofnight/lycan/tags.atom" htmlUrl="https://github.com/tutkuofnight/lycan/releases" type="rss"></outline>
+            <outline title="ngit-cli" text="ngit-cli" xmlUrl="https://github.com/DanConwayDev/ngit-cli/tags.atom" htmlUrl="https://github.com/DanConwayDev/ngit-cli/releases" type="rss"></outline>
+            <outline title="notesnook" text="notesnook" xmlUrl="https://github.com/streetwriters/notesnook/tags.atom" htmlUrl="https://github.com/streetwriters/notesnook/releases" type="rss"></outline>
+            <outline title="opencode" text="opencode" xmlUrl="https://github.com/anomalyco/opencode/tags.atom" htmlUrl="https://github.com/anomalyco/opencode/releases" type="rss"></outline>
+            <outline title="OpenHands" text="OpenHands" xmlUrl="https://github.com/OpenHands/OpenHands/tags.atom" htmlUrl="https://github.com/OpenHands/OpenHands/releases" type="rss"></outline>
+            <outline title="Pinguin-Installer" text="Pinguin-Installer" xmlUrl="https://codeberg.org/pinguin-void/Pinguin-Installer.rss" htmlUrl="https://codeberg.org/pinguin-void/Pinguin-Installer" description="GUI-Installer for Void" type="rss"></outline>
+            <outline title="qrunsvmgr" text="qrunsvmgr" xmlUrl="https://codeberg.org/ItsZariep/qrunsvmgr/tags.rss" htmlUrl="https://codeberg.org/ItsZariep/qrunsvmgr/tags" description="Service manager GUI (Qt6), supporting Runit and Dinit" type="rss"></outline>
+            <outline title="rebos" text="rebos" xmlUrl="https://gitlab.com/Oglo12/rebos/-/tags?feed_token=glft-04c863438e0e5dd2f35a7a72b90423aea8c204e4c72e28538bbb63cd430709ee-3344642&amp;format=atom" htmlUrl="https://gitlab.com/Oglo12/rebos/-/tags" type="rss"></outline>
+            <outline title="rustdesk" text="rustdesk" xmlUrl="https://github.com/rustdesk/rustdesk/tags.atom" htmlUrl="https://github.com/rustdesk/rustdesk/releases" type="rss"></outline>
+            <outline title="shepherd" text="shepherd" xmlUrl="https://codeberg.org/shepherd/shepherd/tags.rss" htmlUrl="https://codeberg.org/shepherd/shepherd/tags" description="The Shepherd—extensible service manager" type="rss"></outline>
+            <outline title="sv-helper" text="sv-helper" xmlUrl="https://github.com/rubyists/sv-helper/tags.atom" htmlUrl="https://github.com/rubyists/sv-helper/releases" type="rss"></outline>
+            <outline title="SyncMarks" text="SyncMarks" xmlUrl="https://codeberg.org/Offerel/SyncMarks-Webapp/tags.rss" htmlUrl="https://codeberg.org/Offerel/SyncMarks-Webapp/tags" description="Sync and manage your browser bookmarks from Edge, Firefox and Chromium with this Webapp." type="rss"></outline>
+            <outline title="SysMan" text="SysMan" xmlUrl="https://codeberg.org/oSoWoSo/SysMan/tags.rss" htmlUrl="https://codeberg.org/oSoWoSo/SysMan/tags" description="System Manager" type="rss"></outline>
+            <outline title="tui-kernel-manager" text="tui-kernel-manager" xmlUrl="https://codeberg.org/pinguin-void/tui-kernel-manager.rss" htmlUrl="https://codeberg.org/pinguin-void/tui-kernel-manager" description="Kernel installieren und entfernen unter Void Linux" type="rss"></outline>
+            <outline title="Vesktop" text="Vesktop" xmlUrl="https://github.com/Vencord/Vesktop/tags.atom" htmlUrl="https://github.com/Vencord/Vesktop/releases" type="rss"></outline>
+            <outline title="Void-Driver-App" text="Void-Driver-App" xmlUrl="https://codeberg.org/pinguin-void/Void-Driver-App.rss" htmlUrl="https://codeberg.org/pinguin-void/Void-Driver-App" description="A modern GTK4 setup tool for Void Linux&#xD;&#xA;Graphics drivers, printers, and scanners—all with a single click." type="rss"></outline>
+            <outline title="void-kernel-manager" text="void-kernel-manager" xmlUrl="https://codeberg.org/pinguin-void/kernel-manager.rss" htmlUrl="https://codeberg.org/pinguin-void/kernel-manager" type="rss"></outline>
+            <outline title="void-live-creator" text="void-live-creator" xmlUrl="https://codeberg.org/pinguin-void/void-live-creator.rss" htmlUrl="https://codeberg.org/pinguin-void/void-live-creator" description="Create a live ISO from a running system" type="rss"></outline>
+            <outline title="void-software-store" text="void-software-store" xmlUrl="https://codeberg.org/pinguin-void/void-software-store.rss" htmlUrl="https://codeberg.org/pinguin-void/void-software-store" description="GUI-Softwareverwaltung" type="rss"></outline>
+            <outline title="void-src-builder" text="void-src-builder" xmlUrl="https://codeberg.org/pinguin-void/void-src-builder.rss" htmlUrl="https://codeberg.org/pinguin-void/void-src-builder" description="Build packages from the Void source code" type="rss"></outline>
+            <outline title="void-user-manager" text="void-user-manager" xmlUrl="https://codeberg.org/pinguin-void/void-user-manager.rss" htmlUrl="https://codeberg.org/pinguin-void/void-user-manager" type="rss"></outline>
+            <outline title="vote" text="vote" xmlUrl="https://codeberg.org/oSoWoSo/vote/tags.rss" htmlUrl="https://codeberg.org/oSoWoSo/vote/tags" description="Void Linux Templater" type="rss"></outline>
+            <outline title="waterfox" text="waterfox" xmlUrl="https://github.com/BrowserWorks/waterfox/tags.atom" htmlUrl="https://github.com/BrowserWorks/waterfox/releases" type="rss"></outline>
+            <outline title="xut" text="xut" xmlUrl="https://codeberg.org/mobinmob/xut/tags.rss" htmlUrl="https://codeberg.org/mobinmob/xut/tags" description="xtra user templates - Build and install packages for Void Linux, using templates from  the abyss-packages unofficial repo" type="rss"></outline>
+            <outline title="zen-browser" text="zen-browser" xmlUrl="https://github.com/zen-browser/desktop/tags.atom" htmlUrl="https://github.com/zen-browser/desktop/releases" type="rss"></outline>
+        </outline>
+    </body>
+</opml>
