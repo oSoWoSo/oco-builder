@@ -1,4 +1,4 @@
-name: Feeds
+name: OCO
 
 on:
   push:
@@ -9,26 +9,46 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: package-update
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
+env:
+  TARGET_REPO: oSoWoSo/vOid_Community_repOsitory
+  TARGET_BRANCH: OCO
+  OCO_REPO: https://github.com/oSoWoSo/vOid_Community_repOsitory.git
+  OCO_LABEL: package-update
+
 jobs:
-  feeds:
+  package-update:
     runs-on: ubuntu-latest
-    name: Build static feeds site
+
     steps:
+      - name: Checkout feeds
+        uses: actions/checkout@v7
 
-      - name: Run Action
-        uses: llun/feeds@4.6.3
+      - name: Checkout OCO
+        run: |
+          git clone \
+            --depth 1 \
+            --branch "$TARGET_BRANCH" \
+            "$OCO_REPO" \
+            "$RUNNER_TEMP/oco"
+
+      - name: Install dependencies
+        run: |
+          python3 -m venv "$RUNNER_TEMP/package-update-venv"
+          "$RUNNER_TEMP/package-update-venv/bin/pip" \
+            install \
+            --disable-pip-version-check \
+            feedparser \
+            packaging
+
+      - name: Check package updates
         env:
-          NEXT_TELEMETRY_DISABLED: 1
-        with:
-          storageType: files
-          #opmlFile: feeds.opml
-          branch: public
-          ##ustomDomain: feed.osowoso.org
-
-      - name: Checkout public
-        uses: actions/checkout@v6
-        with:
-          ref: public
+          GH_TOKEN: ${{ secrets.BOT }}
+          PYTHON: ${{ runner.temp }}/package-update-venv/bin/python
+        run: |
+          "$PYTHON" .github/feedparser.py
