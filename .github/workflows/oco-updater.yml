@@ -34,11 +34,6 @@ jobs:
             "$OCO_REPO" \
             "$RUNNER_TEMP/oco"
 
-      - name: Configure git
-        run: |
-          git config --global user.name "oSoWoSo-bot"
-          git config --global user.email "mail@osowoso.org"
-
       - name: Install dependencies
         run: |
           python3 -m venv "$RUNNER_TEMP/package-update-venv"
@@ -53,7 +48,7 @@ jobs:
         env:
           # This must be a token which can write Issues in
           # oSoWoSo/vOid_Community_repOsitory.
-          GH_TOKEN: ${{ secrets.TOKEN }}
+          GH_TOKEN: ${{ secrets.BOT }}
           PYTHON: ${{ runner.temp }}/package-update-venv/bin/python
         run: |
           "$PYTHON" <<'PY'
