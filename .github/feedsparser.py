@@ -28,13 +28,19 @@ SRC_PKGS = OCO_DIR / "srcpkgs"
 TARGET_REPO = os.environ["TARGET_REPO"]
 ISSUE_LABEL = os.environ["OCO_LABEL"]
 
+PACKAGES_BY_NAME = {}
+
 
 VERSION_RE = re.compile(
     r"(?<![0-9])"
     r"v?"
-    r"(\d+(?:\.\d+){1,5}"
+    r"(\d+(?:\.\d+){0,5}"
     r"(?:[-+._][0-9A-Za-z.-]+)?)"
 )
+
+
+def log(state, name, detail=""):
+    print(f"{state:<8} {name:<26} {detail}".rstrip())
 
 
 def run_gh(args):
@@ -330,14 +336,23 @@ def build_package_map():
     Map every upstream repository to all OCO
     packages using that upstream.
 
+
     This is what allows:
 
         brave-browser
             -> brave-browser-bin
             -> brave-origin-bin
 
+
+    Also records all package names so feeds whose
+    name matches a template can be resolved even
+    when their URLs don't line up.
+
+
     """
+    global PACKAGES_BY_NAME
     mapping = {}
+    packages_by_name = {}
 
     if not SRC_PKGS.is_dir():
         raise RuntimeError(
@@ -355,12 +370,16 @@ def build_package_map():
         if not template.is_file():
             continue
 
+        package = package_dir.name
+        packages_by_name.setdefault(
+            package.casefold(),
+            package,
+        )
+
         urls = template_urls(template)
 
         if not urls:
             continue
-
-        package = package_dir.name
 
         for url in urls:
             key = normalize_url(url)
@@ -373,6 +392,8 @@ def build_package_map():
                 set(),
             ).add(package)
 
+    PACKAGES_BY_NAME = packages_by_name
+
     return mapping
 
 
@@ -380,7 +401,20 @@ def find_packages_for_feed(
     feed,
     package_map,
 ):
+    """
+    Resolve a feed to OCO packages.
+
+
+    URL matching first (a template can map one
+    upstream to several packages, e.g. brave-browser).,
+    then fall back to an exact case-insensitive name
+    match so feeds whose title equals a template name
+    are found even when the URLs don't line up.
+
+
+    """
     packages = set()
+    matched_by_name = False
 
     feed_urls = [
         feed["xml_url"],
@@ -397,10 +431,54 @@ def find_packages_for_feed(
                     package_names
                 )
 
+    if not packages:
+        name = feed["name"].casefold().strip()
+        package = PACKAGES_BY_NAME.get(name)
+
+        if package:
+            packages.add(package)
+            matched_by_name = True
+
     return sorted(
         packages,
         key=str.casefold,
-    )
+    ), matched_by_name
+
+
+def closest_package(feed_name):
+    """
+    Return up to two plausibly related template
+    names for a feed that matched nothing,, or None.
+
+
+    A candidate must contain the feed name or vice
+    versa; the two closest ones are reported.
+
+
+    """
+    name = feed_name.casefold().strip()
+    candidates = []
+
+    for package in sorted(
+        PACKAGES_BY_NAME.values(),
+        key=str.casefold,
+    ):
+        pkg = package.casefold()
+
+        if pkg == name:
+            continue
+
+        if pkg in name or name in pkg:
+            candidates.append(package)
+
+
+            if len(candidates) >= 2:
+                break
+
+    if not candidates:
+        return None
+
+    return ", ".join(candidates)
 
 
 def load_repository_versions():
@@ -727,10 +805,10 @@ def create_issue(
         ]
     ).strip()
 
-    print(
-        f"CREATE  {package}: "
-        f"{repository} -> {upstream} "
-        f"{url}"
+    log(
+        "CREATE",
+        package,
+        f"{repository} -> {upstream}  {url}",
     )
 
 
@@ -771,10 +849,10 @@ def update_issue(
         ]
     )
 
-    print(
-        f"UPDATE  #{issue['number']} "
-        f"{package}: "
-        f"-> {upstream}"
+    log(
+        "UPDATE",
+        package,
+        f"#{issue['number']} {repository} -> {upstream}",
     )
 
 
@@ -799,10 +877,10 @@ def close_issue(
         ]
     )
 
-    print(
-        f"CLOSE   #{issue['number']} "
-        f"{package}: "
-        f"repository={repository_version}"
+    log(
+        "CLOSE",
+        package,
+        f"#{issue['number']}  repository={repository_version}",
     )
 
 
@@ -811,35 +889,39 @@ def process_feed(
     repository_versions,
     package_map,
     issues,
+    stats,
 ):
     feed_name = result["name"]
 
     if result.get("error"):
-        print(
-            f"SKIP    {feed_name}: "
-            f"{result['error']}",
-            file=sys.stderr,
+        stats["error"] += 1
+        log(
+            "ERROR",
+            feed_name,
+            result["error"],
         )
         return
 
-    packages = find_packages_for_feed(
-        result,
-        package_map,
+    packages, matched_by_name = (
+        find_packages_for_feed(
+            result,
+            package_map,
+        )
     )
 
     if not packages:
-        print(
-            f"SKIP    {feed_name}: "
+        stats["miss"] += 1
+        hint = closest_package(feed_name)
+
+        detail = (
             "no OCO package matches feed"
+            + (f"; closest: {hint}" if hint else "")
         )
+        log("MISS", feed_name, detail)
         return
 
     upstream = result["version"]
-
-    print(
-        f"FEED    {feed_name}: "
-        f"upstream={upstream}"
-    )
+    match_kind = "name" if matched_by_name else "URL"
 
     for package in packages:
         repository_package = (
@@ -849,9 +931,11 @@ def process_feed(
         )
 
         if repository_package is None:
-            print(
-                f"SKIP    {package}: "
-                "not found in README"
+            stats["miss"] += 1
+            log(
+                "MISS",
+                package,
+                "template exists but no README row",
             )
             continue
 
@@ -864,15 +948,16 @@ def process_feed(
             package,
         )
 
-        print(
-            f"CHECK   {package}: "
-            f"repository="
-            f"{repository_version}, "
-            f"upstream={upstream}"
-        )
-
         # Already up-to-date.
+
+
         if upstream <= repository_version:
+            stats["ok"] += 1
+            detail = (
+                f"up-to-date (repo {repository_version}.,  "
+                f"{match_kind} match)"
+            )
+
             if open_issue:
                 close_issue(
                     open_issue,
@@ -881,10 +966,18 @@ def process_feed(
                         "version_text"
                     ],
                 )
+                detail = (
+                    f"closed #{open_issue['number']}  "
+                    f"(repo {repository_version}.,  "
+                    f"{match_kind} match)"
+                )
 
+            log("OK", package, detail)
             continue
 
         # Upstream is newer.
+
+
         if open_issue:
             tracked_version = (
                 issue_version(open_issue)
@@ -894,6 +987,7 @@ def process_feed(
                 tracked_version is None
                 or upstream > tracked_version
             ):
+                stats["update"] += 1
                 update_issue(
                     open_issue,
                     package,
@@ -901,10 +995,12 @@ def process_feed(
                     result,
                 )
             else:
-                print(
-                    f"SKIP    {package}: "
-                    "issue already tracks "
-                    f"{tracked_version}"
+                stats["skip"] += 1
+                log(
+                    "SKIP",
+                    package,
+                    f"issue #{open_issue['number']}  "
+                    f"already tracks {tracked_version}",
                 )
 
             continue
@@ -918,13 +1014,15 @@ def process_feed(
         )
 
         if duplicate:
-            print(
-                f"SKIP    {package}: "
-                f"already tracked by "
-                f"#{duplicate['number']}"
+            stats["skip"] += 1
+            log(
+                "SKIP",
+                package,
+                f"already tracked by #{duplicate['number']}",
             )
             continue
 
+        stats["create"] += 1
         create_issue(
             package,
             repository_package,
@@ -974,6 +1072,15 @@ def main():
                 future.result()
             )
 
+    stats = {
+        "ok": 0,
+        "update": 0,
+        "create": 0,
+        "skip": 0,
+        "miss": 0,
+        "error": 0,
+    }
+
     for result in sorted(
         results,
         key=lambda item:
@@ -984,13 +1091,28 @@ def main():
             repository_versions,
             package_map,
             issues,
+            stats,
         )
 
         # Refresh after every feed because one
         # feed can create multiple issues.
+
+
         issues = load_issues()
 
-    print("Done.")
+    print()
+
+    log(
+        "SUMMARY",
+        "feeds",
+        f"{len(results)}  "
+        f"| ok {stats['ok']}  "
+        f"| update {stats['update']}  "
+        f"| create {stats['create']}  "
+        f"| skip {stats['skip']}  "
+        f"| miss {stats['miss']}  "
+        f"| error {stats['error']}",
+    )
 
 
 if __name__ == "__main__":
