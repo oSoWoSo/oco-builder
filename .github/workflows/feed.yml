@@ -1,0 +1,21 @@
+name: Monitor new Git versions
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  gke-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: git-for-windows/rss-to-issues@v0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          feed: https://github.com/oSoWoSo/oco-builder/feeds.opml
+          prefix: "[Git]"
+          character-limit: 255
+          dry-run: false
+          max-age: 48h
+          labels: git
+          url-only: false
