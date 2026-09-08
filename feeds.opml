@@ -21,7 +21,7 @@
             <outline title="void-packages" text="void-packages" xmlUrl="https://github.com/void-linux/void-packages/commits/master.atom" htmlUrl="https://github.com/void-linux/void-packages/commits/master" type="rss"></outline>
         </outline>
         <outline text="package-update">
-            <outline title="android-sdk" text="android-sdk" xmlUrl="https://github.com/ivan-hc/AM/tags.atom" htmlUrl="https://github.com/ivan-hc/AM/releases" description="Android SDK template for OCO" type="rss"></outline>
+            <outline title="android-sdk" text="android-sdk" xmlUrl="https://github.com/ivan-hc/AM/tags.atom" htmlUrl="https://github.com/ivan-hc/AM/releases" description="Android SDK platform 36 and build-tools 29.0.3" type="rss"></outline>
             <outline title="aquamarine" text="aquamarine" xmlUrl="https://github.com/hyprwm/aquamarine/tags.atom" htmlUrl="https://github.com/hyprwm/aquamarine/releases" description="Aquamarine - Hyprland&#39;s backend" type="rss"></outline>
             <outline title="BoxBuddyRS" text="BoxBuddyRS" xmlUrl="https://github.com/Dvlv/BoxBuddyRS/tags.atom" htmlUrl="https://github.com/Dvlv/BoxBuddyRS/releases" type="rss"></outline>
             <outline title="brave-browser" text="brave-browser" xmlUrl="https://github.com/brave/brave-browser/tags.atom" htmlUrl="https://github.com/brave/brave-browser/releases" miniflux:blocklistRules="EntryTitle=(?i)Nightly" miniflux:keeplistRules="EntryTitle=(?i)Release" type="rss"></outline>
@@ -201,7 +201,7 @@
             <outline title="xut" text="xut" xmlUrl="https://codeberg.org/mobinmob/xut/tags.rss" htmlUrl="https://codeberg.org/mobinmob/xut/tags" description="xtra user templates - Build and install packages for Void Linux, using templates from  the abyss-packages unofficial repo" type="rss"></outline>
             <outline title="xxtools-git" text="xxtools-git" xmlUrl="https://github.com/Piraty/xxtools/tags.atom" htmlUrl="https://github.com/Piraty/xxtools/releases" type="rss"></outline>
             <outline title="zen-browser" text="zen-browser" xmlUrl="https://github.com/zen-browser/desktop/tags.atom" htmlUrl="https://github.com/zen-browser/desktop/releases" type="rss"></outline>
-            <outline title="zig" text="zig" xmlUrl="https://github.com/ziglang/zig/tags.atom" htmlUrl="https://github.com/ziglang/zig/releases" type="rss"></outline>
+            <outline title="zig" text="zig" xmlUrl="https://github.com/ziglang/zig/tags.atom" htmlUrl="https://github.com/ziglang/zig/releases" description="Programming language designed for robustness, optimality, and clarity" type="rss"></outline>
         </outline>
     </body>
 </opml>
