@@ -90,7 +90,7 @@
             <outline title="guile-fibers" text="guile-fibers" xmlUrl="https://codeberg.org/guile/fibers/tags.rss" htmlUrl="https://codeberg.org/guile/fibers/tags" description="Concurrent ML-like concurrency for Guile" type="rss"></outline>
             <outline title="gum" text="gum" xmlUrl="https://github.com/charmbracelet/gum/tags.atom" htmlUrl="https://github.com/charmbracelet/gum/releases" type="rss"></outline>
             <outline title="gum-panel" text="gum-panel" xmlUrl="https://codeberg.org/oSoWoSo/gum/tags.rss" htmlUrl="https://codeberg.org/oSoWoSo/gum/tags" description="Tool for glamorous shell scripts" type="rss"></outline>
-            <outline title="helium-browser" text="helium-browser" xmlUrl="https://github.com/imputnet/helium/tags.atom" htmlUrl="https://github.com/imputnet/helium/releases" type="rss"></outline>
+            <outline title="helium-browser-bin" text="helium-browser-bin" xmlUrl="https://github.com/imputnet/helium/tags.atom" htmlUrl="https://github.com/imputnet/helium/releases" type="rss"></outline>
             <outline title="hister" text="hister" xmlUrl="https://github.com/asciimoo/hister/tags.atom" htmlUrl="https://github.com/asciimoo/hister/releases" type="rss"></outline>
             <outline title="hyprcursor" text="hyprcursor" xmlUrl="https://github.com/hyprwm/hyprcursor/tags.atom" htmlUrl="https://github.com/hyprwm/hyprcursor/releases" type="rss"></outline>
             <outline title="hyprdynamicmonitors" text="hyprdynamicmonitors" xmlUrl="https://github.com/fiffeek/hyprdynamicmonitors/tags.atom" htmlUrl="https://github.com/fiffeek/hyprdynamicmonitors/releases" type="rss"></outline>
@@ -194,13 +194,13 @@
             <outline title="void-user-manager" text="void-user-manager" xmlUrl="https://codeberg.org/pinguin-void/void-user-manager.rss" htmlUrl="https://codeberg.org/pinguin-void/void-user-manager" type="rss"></outline>
             <outline title="vote" text="vote" xmlUrl="https://codeberg.org/oSoWoSo/vote/tags.rss" htmlUrl="https://codeberg.org/oSoWoSo/vote/tags" description="Void Linux Templater" type="rss"></outline>
             <outline title="vtm" text="vtm" xmlUrl="https://github.com/directvt/vtm/tags.atom" htmlUrl="https://github.com/directvt/vtm/releases" type="rss"></outline>
-            <outline title="waterfox" text="waterfox" xmlUrl="https://github.com/BrowserWorks/waterfox/tags.atom" htmlUrl="https://github.com/BrowserWorks/waterfox/releases" type="rss"></outline>
+            <outline title="waterfox-bin" text="waterfox-bin" xmlUrl="https://github.com/BrowserWorks/waterfox/tags.atom" htmlUrl="https://github.com/BrowserWorks/waterfox/releases" type="rss"></outline>
             <outline title="wpgtk" text="wpgtk" xmlUrl="https://github.com/deviantfero/wpgtk/tags.atom" htmlUrl="https://github.com/deviantfero/wpgtk/releases" type="rss"></outline>
             <outline title="xdg-desktop-portal-cosmic" text="xdg-desktop-portal-cosmic" xmlUrl="https://github.com/pop-os/xdg-desktop-portal-cosmic/tags.atom" htmlUrl="https://github.com/pop-os/xdg-desktop-portal-cosmic/releases" type="rss"></outline>
             <outline title="xdg-desktop-portal-hyprland" text="xdg-desktop-portal-hyprland" xmlUrl="https://github.com/hyprwm/xdg-desktop-portal-hyprland/tags.atom" htmlUrl="https://github.com/hyprwm/xdg-desktop-portal-hyprland/releases" type="rss"></outline>
             <outline title="xut" text="xut" xmlUrl="https://codeberg.org/mobinmob/xut/tags.rss" htmlUrl="https://codeberg.org/mobinmob/xut/tags" description="xtra user templates - Build and install packages for Void Linux, using templates from  the abyss-packages unofficial repo" type="rss"></outline>
             <outline title="xxtools-git" text="xxtools-git" xmlUrl="https://github.com/Piraty/xxtools/tags.atom" htmlUrl="https://github.com/Piraty/xxtools/releases" type="rss"></outline>
-            <outline title="zen-browser" text="zen-browser" xmlUrl="https://github.com/zen-browser/desktop/tags.atom" htmlUrl="https://github.com/zen-browser/desktop/releases" type="rss"></outline>
+            <outline title="zen-browser-bin" text="zen-browser-bin" xmlUrl="https://github.com/zen-browser/desktop/tags.atom" htmlUrl="https://github.com/zen-browser/desktop/releases" type="rss"></outline>
             <outline title="zig" text="zig" xmlUrl="https://github.com/ziglang/zig/tags.atom" htmlUrl="https://github.com/ziglang/zig/releases" description="Programming language designed for robustness, optimality, and clarity" type="rss"></outline>
         </outline>
     </body>
