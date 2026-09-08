@@ -51,4 +51,5 @@ jobs:
           GH_TOKEN: ${{ secrets.BOT }}
           PYTHON: ${{ runner.temp }}/package-update-venv/bin/python
         run: |
-          "$PYTHON" .github/feedparser.py
+          ls "$RUNNER_TEMP/"
+          "$PYTHON" "$RUNNER_TEMP/.github/feedparser.py"
