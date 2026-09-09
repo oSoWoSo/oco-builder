@@ -70,7 +70,7 @@ jobs:
                 echo \"repository=\${OCO_REPO}\" > \"\${md}etc/xbps.d/oco.conf\"
               done
 
-              echo y | xbps-install -S
+              yes '' | xbps-install -S && echo "Sync completed"
 
               chown -R builder:builder .
               rm -rf hostdir/sources/* masterdir-*/var/cache/xbps/*
