@@ -15,7 +15,16 @@ import feedparser
 from packaging.version import InvalidVersion, Version
 
 
-OPML_FILE = "feeds.opml"
+OPML_PATH = os.environ.get(
+    "OPML_PATH",
+    "feeds.opml",
+)
+OPML_URL = os.environ.get(
+    "OPML_URL",
+    "https://raw.githubusercontent.com/"
+    "oSoWoSo/vOid_Community_repOsitory/"
+    "refs/heads/OCO/src/feed.opml",
+)
 FOLDER_NAME = "package-update"
 
 OCO_DIR = Path(
@@ -153,8 +162,36 @@ def entry_allowed(
     return True
 
 
+def load_opml():
+    opml_path = Path(OPML_PATH)
+
+    if opml_path.exists():
+        return ET.parse(
+            opml_path
+        ).getroot()
+
+    request = urllib.request.Request(
+        OPML_URL,
+        headers={
+            "User-Agent":
+                "package-update-github-action/1.0",
+            "Accept": "application/xml, text/xml, */*",
+        },
+    )
+
+    with urllib.request.urlopen(
+        request,
+        timeout=30,
+    ) as response:
+        data = response.read()
+
+    return ET.fromstring(
+        data
+    )
+
+
 def load_feeds():
-    root = ET.parse(OPML_FILE).getroot()
+    root = load_opml()
     body = root.find("body")
 
     if body is None:
