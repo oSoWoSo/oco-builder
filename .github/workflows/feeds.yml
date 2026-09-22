@@ -7,6 +7,12 @@ on:
   schedule:
     - cron: "0 */3 * * *"
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (report only, no issue changes)"
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: package-update
@@ -51,5 +57,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BOT }}
           PYTHON: ${{ runner.temp }}/package-update-venv/bin/python
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
           "$PYTHON" .github/feedsparser.py

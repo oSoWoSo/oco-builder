@@ -27,6 +27,15 @@ OPML_URL = os.environ.get(
 )
 FOLDER_NAME = "package-update"
 
+DRY_RUN = os.environ.get(
+    "DRY_RUN",
+    "",
+).strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
+
 OCO_DIR = Path(
     os.environ["RUNNER_TEMP"]
 ) / "oco"
@@ -827,6 +836,15 @@ def create_issue(
         result,
     )
 
+    if DRY_RUN:
+        log(
+            "CREATE",
+            package,
+            f"{repository} -> {upstream}"
+            "  [dry-run]",
+        )
+        return
+
     url = run_gh(
         [
             "issue",
@@ -872,6 +890,15 @@ def update_issue(
         result,
     )
 
+    if DRY_RUN:
+        log(
+            "UPDATE",
+            package,
+            f"#{issue['number']} {repository} -> {upstream}"
+            "  [dry-run]",
+        )
+        return
+
     run_gh(
         [
             "issue",
@@ -898,6 +925,15 @@ def close_issue(
     package,
     repository_version,
 ):
+    if DRY_RUN:
+        log(
+            "CLOSE",
+            package,
+            f"#{issue['number']}  repository={repository_version}"
+            "  [dry-run]",
+        )
+        return
+
     run_gh(
         [
             "issue",
@@ -1085,7 +1121,14 @@ def main():
 
     issues = load_issues()
 
-    ensure_label()
+    if DRY_RUN:
+        log(
+            "DRY_RUN",
+            "label",
+            f"would create label {ISSUE_LABEL!r}",
+        )
+    else:
+        ensure_label()
 
     print("Fetching feeds...")
 

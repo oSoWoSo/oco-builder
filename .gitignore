@@ -2,5 +2,6 @@
 /*
 !/.gitignore
 !/.github
+/.github/__pycache__
 !/README.md
 !/bootstrap.sh
