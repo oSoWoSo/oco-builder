@@ -54,6 +54,12 @@ xbps_install_retry() {
 	return 1
 }
 xbps_install_retry
+xbps-install -y -R "$OCO_REPO" cosign
+# Fail the image build rather than ship one without cosign: every manifest
+command -v cosign >/dev/null 2>&1 || {
+	echo "==> ERROR: cosign was not installed from ${OCO_REPO}" >&2
+	exit 1
+}
 
 for md in /void-packages/masterdir-*/; do
 	[ -d "$md" ] || continue
