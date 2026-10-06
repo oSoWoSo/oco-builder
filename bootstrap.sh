@@ -26,11 +26,6 @@ sudo -Eu builder common/travis/set_mirror.sh
 sudo -Eu builder common/travis/prepare.sh
 common/travis/fetch-xtools.sh
 
-# prepare.sh already wrote XBPS_BUILD_ENVIRONMENT, XBPS_ALLOW_RESTRICTED
-# and XBPS_CHROOT_CMD=uchroot into etc/conf and binary-bootstrapped the
-# masterdir with that chroot style. Keep it (it is what void-packages own
-# CI uses in --privileged containers); switching to ethereal here would
-# point xbps-src at a plain `masterdir` that does not exist in the image.
 cat >> etc/conf <<'EOF'
 XBPS_CCACHE=yes
 XBPS_UPDATE_CHECK_VERBOSE=yes
@@ -39,10 +34,14 @@ EOF
 echo "repository=${OCO_REPO}" > /etc/xbps.d/oco.conf
 
 mkdir -p /var/db/xbps/keys
+OCO_KEY="/var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist"
+OCO_KEY_RAW=/tmp/oco-repo-key.plist
 curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist" \
-	-o /var/db/xbps/keys/oco-repo-key.plist ||
+	-o "$OCO_KEY_RAW" ||
  curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
-	-o /var/db/xbps/keys/oco-repo-key.plist
+	-o "$OCO_KEY_RAW"
+sed -e 's|<string>|@OCO_S@|g' -e 's|</string>|@OCO_E@|g' -e '/@OCO_S@/s|<|\&lt;|g' -e '/@OCO_S@/s|>|\&gt;|g' -e 's|@OCO_S@|<string>|g' -e 's|@OCO_E@|</string>|g' "$OCO_KEY_RAW" > "$OCO_KEY"
+rm -f "$OCO_KEY_RAW"
 
 xbps_install_retry() {
 	local max=3 delay=5 i
@@ -65,7 +64,6 @@ for md in /void-packages/masterdir-*/; do
 	[ -d "$md" ] || continue
 	mkdir -p "${md}etc/xbps.d" "${md}var/db/xbps/keys"
 	cp /var/db/xbps/keys/*.plist "${md}var/db/xbps/keys/"
-	[ -f /var/db/xbps/keys/oco-repo-key.plist ] && cp /var/db/xbps/keys/oco-repo-key.plist "${md}var/db/xbps/keys/"
 	echo "repository=${OCO_REPO}" > "${md}etc/xbps.d/oco.conf"
 done
 
