@@ -66,6 +66,6 @@ command -v cosign >/dev/null 2>&1 || {
 	echo "==> ERROR: cosign was not installed from ${OCO_REPO}" >&2
 	exit 1
 }
-install -m 0755 /tmp/oco-builder/refresh.sh /usr/local/bin/oco-prepare
+install -m 0755 /tmp/oco-builder/oco-prepare /usr/local/bin/oco-prepare
 chown -R builder:builder .
 rm -rf hostdir/sources/* masterdir-*/var/cache/xbps/*

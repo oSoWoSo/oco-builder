@@ -5,4 +5,4 @@
 /.github/__pycache__
 !/README.md
 !/bootstrap.sh
-!/refresh.sh
+!/oco-prepare
