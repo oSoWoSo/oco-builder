@@ -38,11 +38,11 @@ jobs:
         run: |
           docker rm -f bootstrap 2>/dev/null || true
           docker run --privileged --name bootstrap \
-            -v "$PWD:/tmp/oco-builder:ro" \
+            -v "$PWD/bootstrap.sh:/tmp/bootstrap.sh:ro" \
             -e NAME="${{ matrix.name }}" \
             -e EXTRA_PKGS="${{ matrix.name == 'x86_64' && 'pandoc' || '' }}" \
             ghcr.io/void-linux/void-${{ matrix.libc }}-full:latest \
-            sh /tmp/oco-builder/bootstrap.sh
+            sh /tmp/bootstrap.sh
 
       - name: Commit and push
         run: |
