@@ -34,7 +34,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run bootstrap.sh
+      - name: Run bootstrap
         run: |
           docker rm -f bootstrap 2>/dev/null || true
           docker run --privileged --name bootstrap \
@@ -42,7 +42,7 @@ jobs:
             -e NAME="${{ matrix.name }}" \
             -e EXTRA_PKGS="${{ matrix.name == 'x86_64' && 'pandoc' || '' }}" \
             ghcr.io/void-linux/void-${{ matrix.libc }}-full:latest \
-            sh /tmp/oco-builder/bootstrap.sh
+            sh /tmp/oco-builder/bootstrap
 
       - name: Commit and push
         run: |
