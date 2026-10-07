@@ -24,6 +24,9 @@ jobs:
           - { name: aarch64-musl, libc: musl, runner: ubuntu-24.04-arm }
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
       - name: Log in to GHCR
         uses: docker/login-action@v4
         with:
@@ -35,7 +38,7 @@ jobs:
         run: |
           docker rm -f bootstrap 2>/dev/null || true
           docker run --privileged --name bootstrap \
-            -v "$PWD:/tmp/oco-builder:ro" \
+            -v "$GITHUB_WORKSPACE:/tmp/oco-builder:ro" \
             -e NAME="${{ matrix.name }}" \
             -e EXTRA_PKGS="${{ matrix.name == 'x86_64' && 'pandoc' || '' }}" \
             ghcr.io/void-linux/void-${{ matrix.libc }}-full:latest \
