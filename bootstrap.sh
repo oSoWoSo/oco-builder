@@ -7,7 +7,6 @@
 set -eu
 
 OCO_REPO="https://repo.osowoso.org/${NAME}"
-
 mkdir -p /etc/xbps.d
 cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
 sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
@@ -15,13 +14,10 @@ xbps-install -Syu xbps
 xbps-install -yu
 # shellcheck disable=SC2086
 xbps-install -y sudo bash curl fuse3 git python3 rclone rsync xtools zstd ${EXTRA_PKGS:-}
-
 useradd -G xbuilder -M builder
-
 git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
 chown -R builder:builder /void-packages
 cd /void-packages
-
 sudo -Eu builder common/travis/set_mirror.sh
 sudo -Eu builder common/travis/prepare.sh
 common/travis/fetch-xtools.sh
@@ -32,14 +28,13 @@ XBPS_UPDATE_CHECK_VERBOSE=yes
 EOF
 
 echo "repository=${OCO_REPO}" > /etc/xbps.d/oco.conf
-
-mkdir -p /var/db/xbps/keys
-OCO_KEY="/var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist"
+mkdir -p /var/db/xbps/keys /void-packages/common/repo-keys
+OCO_KEY="df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist"
 curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist" \
-	-o "$OCO_KEY" ||
+	-o "/var/db/xbps/keys/${OCO_KEY}" ||
  curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
-	-o "$OCO_KEY"
-
+	-o "/var/db/xbps/keys/${OCO_KEY}"
+cp "/var/db/xbps/keys/${OCO_KEY}" /void-packages/common/repo-keys/
 xbps_install_retry() {
 	local max=3 delay=5 i
 	for i in $(seq 1 $max); do
@@ -50,19 +45,16 @@ xbps_install_retry() {
 	return 1
 }
 xbps_install_retry
-xbps-install -y -R "$OCO_REPO" cosign
-# Fail the image build rather than ship one without cosign: every manifest
+xbps-install -R "$OCO_REPO" -y cosign
 command -v cosign >/dev/null 2>&1 || {
 	echo "==> ERROR: cosign was not installed from ${OCO_REPO}" >&2
 	exit 1
 }
-
 for md in /void-packages/masterdir-*/; do
 	[ -d "$md" ] || continue
 	mkdir -p "${md}etc/xbps.d" "${md}var/db/xbps/keys"
 	cp /var/db/xbps/keys/*.plist "${md}var/db/xbps/keys/"
 	echo "repository=${OCO_REPO}" > "${md}etc/xbps.d/oco.conf"
 done
-
 chown -R builder:builder .
 rm -rf hostdir/sources/* masterdir-*/var/cache/xbps/*
