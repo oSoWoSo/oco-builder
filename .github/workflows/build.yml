@@ -73,14 +73,17 @@ jobs:
               echo 'Configure oco repo and key in host and masterdirs'
               OCO_REPO=\"https://repo.osowoso.org/${{ matrix.name }}\"
               echo \"repository=\${OCO_REPO}\" > /etc/xbps.d/oco.conf
+              echo 'Copying plist to masterdirs'
               for md in /void-packages/masterdir-*/; do
                 [ -d \"\$md\" ] || continue
                 mkdir -p \"\${md}etc/xbps.d\" \"\${md}var/db/xbps/keys\"
                 cp /var/db/xbps/keys/*.plist \"\${md}var/db/xbps/keys/\"
                 echo \"repository=\${OCO_REPO}\" > \"\${md}etc/xbps.d/oco.conf\"
               done
+              echo 'Syncing'
               xbps-install -Sy && echo \"Sync completed\"
-              xbps-install -Ry \"\$OCO_REPO\" cosign
+              echo 'Installing cosign'
+              xbps-install -y -R \"\$OCO_REPO\" cosign
               command -v cosign >/dev/null 2>&1 || {
                 echo \"==> ERROR: cosign was not installed from \$OCO_REPO\" >&2
                 exit 1
