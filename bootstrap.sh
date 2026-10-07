@@ -34,6 +34,7 @@ EOF
 echo "repository=${OCO_REPO}" > /etc/xbps.d/oco.conf
 
 mkdir -p /var/db/xbps/keys
+mkdir -p common/repo-keys
 # The public key shipped in oco-repo-key.plist is DER-encoded, but xbps can
 # only verify package signatures with a PEM key plist (see lib/verifysig.c
 # PEM_read_bio_RSA_PUBKEY). Normalize it the same way xbps does on key import.
@@ -55,7 +56,7 @@ PEM_B64=$(base64 -w0 /tmp/oco-pub.pem)
 	printf '\t<key>signature-by</key>\n\t<string>oSoWoSo &lt;mail@osowoso.org&gt;</string>\n'
 	printf '</dict>\n</plist>\n'
 } > "$OCO_KEY"
-cp "$OCO_KEY" void-packages/common/repo-keys/
+cp "$OCO_KEY" common/repo-keys/
 rm -f "$OCO_KEY_RAW" /tmp/oco-pub.der /tmp/oco-pub.pem
 
 xbps_install_retry() {
