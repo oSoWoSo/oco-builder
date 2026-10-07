@@ -1,9 +1,5 @@
 #!/bin/sh
-# Builds an oco-builder bootstrap environment inside a void-{glibc,musl}-full
-# container. Run by .github/workflows/build.yml, which mounts this repo at
-# /tmp/oco-builder and passes:
-#   NAME       target arch (x86_64 | x86_64-musl | aarch64 | aarch64-musl)
-#   EXTRA_PKGS optional extra host packages (e.g. pandoc on x86_64)
+# Builds an oco-builder bootstrap environment inside a void-{glibc,musl}-full container
 set -eu
 
 OCO_REPO="https://repo.osowoso.org/${NAME}"
