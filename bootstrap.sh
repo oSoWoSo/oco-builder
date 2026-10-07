@@ -36,18 +36,21 @@ curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/
 	-o "/var/db/xbps/keys/${OCO_KEY}"
 cp "/var/db/xbps/keys/${OCO_KEY}" /void-packages/common/repo-keys/
 # Make the OCO repo visible to builds: chroot.sh regenerates the masterdir
-# repo list from these files, so injecting here (once, at image build) is
-# what lets every CI job resolve OCO packages without re-adding the lines each run.
-case "$NAME" in
-        x86_64)          _rrf=/void-packages/etc/xbps.d/repos-remote.conf ;;
-        x86_64-musl)      _rrf=/void-packages/etc/xbps.d/repos-remote-musl.conf ;;
-        aarch64)         _rrf=/void-packages/etc/xbps.d/repos-remote-aarch64.conf ;;
-        aarch64-musl)    _rrf=/void-packages/etc/xbps.d/repos-remote-aarch64-musl.conf ;;
-        *) _rrf= ;;
-esac
-if [ -n "$_rrf" ] && [ -f "$_rrf" ]; then
-        sed -i "1i repository=${OCO_REPO}" "$_rrf"
-fi
+# (and cross-root) repo list from these files, so injecting here once, at
+# image build, is what lets every CI job resolve OCO packages — for the host
+# arch *and* for cross-builds, which read the target arch's repos-remote file.
+OCO_URL="${OCO_REPO%/*}"
+for _rrf in repos-remote.conf repos-remote-musl.conf repos-remote-aarch64.conf repos-remote-aarch64-musl.conf; do
+        case "$_rrf" in
+                repos-remote.conf)             _repo="$OCO_URL/x86_64" ;;
+                repos-remote-musl.conf)        _repo="$OCO_URL/x86_64-musl" ;;
+                repos-remote-aarch64.conf)     _repo="$OCO_URL/aarch64" ;;
+                repos-remote-aarch64-musl.conf) _repo="$OCO_URL/aarch64-musl" ;;
+        esac
+        f=/void-packages/etc/xbps.d/$_rrf
+        [ -f "$f" ] || continue
+        sed -i "1i repository=${_repo}" "$f"
+done
 xbps_install_retry() {
 	local max=3 delay=5 i
 	for i in $(seq 1 $max); do
