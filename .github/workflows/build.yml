@@ -41,48 +41,48 @@ jobs:
               mkdir -p /etc/xbps.d
               cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
               sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
-              echo 'Installing xbps'
+              echo '=================  Installing xbps  ================='
               xbps-install -Syu xbps
-              echo 'xbps-install -yu'
+              echo '=================  xbps-install -yu  ================='
               xbps-install -yu
-              echo 'Installing dependencies'
+              echo '=================  Installing dependencies  ================='
               xbps-install -y sudo bash curl fuse3 git python3 rclone rsync xtools zstd
-              echo 'Creating directory'
+              echo '=================  Creating directory  ================='
               mkdir -p /var/db/xbps/keys
-              echo 'Define OCO_KEY'
+              echo '=================  Define OCO_KEY  ================='
               OCO_KEY=\"/var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist\"
-              echo 'Show OCO_KEY'
+              echo '=================  Show OCO_KEY  ================='
               echo \"OCO_KEY is: $OCO_KEY\"
-              echo 'Get plist'
+              echo '=================  Get plist  ================='
               curl -fsSL 'https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist' -o \"\$OCO_KEY\" || \
               curl -fsSL 'https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist' -o \"\$OCO_KEY\"
               ${{ matrix.name == 'x86_64' && 'xbps-install -y pandoc' || 'true' }}
-              echo 'Adding xbuilder user'
+              echo '=================  Adding xbuilder user  ================='
               useradd -G xbuilder -M builder
-              echo 'Clone void-packages'
+              echo '=================  Clone void-packages  ================='
               git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
-              echo 'Chown void-packages'
+              echo '=================  Chown void-packages  ================='
               chown -R builder:builder /void-packages
               cd /void-packages
-              echo 'Set mirror'
+              echo '=================  Set mirror  ================='
               sudo -Eu builder common/travis/set_mirror.sh
-              echo 'Prepare'
+              echo '=================  Prepare  ================='
               sudo -Eu builder common/travis/prepare.sh
-              echo 'Fetch xtools'
+              echo '=================  Fetch xtools  ================='
               common/travis/fetch-xtools.sh
-              echo 'Configure oco repo and key in host and masterdirs'
+              echo '=================  Define OCO repo  ================='
               OCO_REPO=\"https://repo.osowoso.org/${{ matrix.name }}\"
               echo \"repository=\${OCO_REPO}\" > /etc/xbps.d/oco.conf
-              echo 'Copying plist to masterdirs'
+              echo '=================  Copying plist to masterdirs  ================='
               for md in /void-packages/masterdir-*/; do
                 [ -d \"\$md\" ] || continue
                 mkdir -p \"\${md}etc/xbps.d\" \"\${md}var/db/xbps/keys\"
                 cp /var/db/xbps/keys/*.plist \"\${md}var/db/xbps/keys/\"
                 echo \"repository=\${OCO_REPO}\" > \"\${md}etc/xbps.d/oco.conf\"
               done
-              echo 'Syncing'
+              echo '=================  Syncing  ================='
               xbps-install -Sy && echo \"Sync completed\"
-              echo 'Installing cosign'
+              echo '=================  Installing cosign  ================='
               xbps-install -y -R \"\$OCO_REPO\" cosign
               command -v cosign >/dev/null 2>&1 || {
                 echo \"==> ERROR: cosign was not installed from \$OCO_REPO\" >&2
