@@ -32,7 +32,5 @@ In addition to the void base + `xbps-src`, the images include:
 
 - `sudo`, `bash`, `curl`, `git` -- core build needs
 - `python3` -- runtime for repodata helpers in `oSoWoSo/oco`
-- `rclone` -- manage files on cloud storage
-- `fuse3` -- filesystem in userspace
 - `zstd` -- CLI for round-tripping zstd-compressed repodata
 - `pandoc` -- README → HTML for the oco website generator (x86\_64 only; not packaged for all archs in void)

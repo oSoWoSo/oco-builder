@@ -13,7 +13,7 @@ sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
 xbps-install -Syu xbps
 xbps-install -yu
 # shellcheck disable=SC2086
-xbps-install -y sudo bash curl fuse3 git python3 rclone rsync xtools zstd ${EXTRA_PKGS:-}
+xbps-install -y sudo bash curl git python3 xtools zstd ${EXTRA_PKGS:-}
 useradd -G xbuilder -M builder
 git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
 chown -R builder:builder /void-packages
