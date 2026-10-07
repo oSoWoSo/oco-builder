@@ -31,10 +31,6 @@ curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/
  curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
 	-o "/var/db/xbps/keys/${OCO_KEY}"
 cp "/var/db/xbps/keys/${OCO_KEY}" /void-packages/common/repo-keys/
-# Make the OCO repo visible to builds: chroot.sh regenerates the masterdir
-# (and cross-root) repo list from these files, so injecting here once, at
-# image build, is what lets every CI job resolve OCO packages — for the host
-# arch *and* for cross-builds, which read the target arch's repos-remote file.
 OCO_URL="${OCO_REPO%/*}"
 for _rrf in repos-remote.conf repos-remote-musl.conf repos-remote-aarch64.conf repos-remote-aarch64-musl.conf; do
         case "$_rrf" in
