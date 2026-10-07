@@ -35,6 +35,19 @@ curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/
  curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
 	-o "/var/db/xbps/keys/${OCO_KEY}"
 cp "/var/db/xbps/keys/${OCO_KEY}" /void-packages/common/repo-keys/
+# Make the OCO repo visible to builds: chroot.sh regenerates the masterdir
+# repo list from these files, so injecting here (once, at image build) is
+# what lets every CI job resolve OCO packages without re-adding the lines each run.
+case "$NAME" in
+        x86_64)          _rrf=/void-packages/etc/xbps.d/repos-remote.conf ;;
+        x86_64-musl)      _rrf=/void-packages/etc/xbps.d/repos-remote-musl.conf ;;
+        aarch64)         _rrf=/void-packages/etc/xbps.d/repos-remote-aarch64.conf ;;
+        aarch64-musl)    _rrf=/void-packages/etc/xbps.d/repos-remote-aarch64-musl.conf ;;
+        *) _rrf= ;;
+esac
+if [ -n "$_rrf" ] && [ -f "$_rrf" ]; then
+        sed -i "1i repository=${OCO_REPO}" "$_rrf"
+fi
 xbps_install_retry() {
 	local max=3 delay=5 i
 	for i in $(seq 1 $max); do
@@ -56,5 +69,6 @@ for md in /void-packages/masterdir-*/; do
 	cp /var/db/xbps/keys/*.plist "${md}var/db/xbps/keys/"
 	echo "repository=${OCO_REPO}" > "${md}etc/xbps.d/oco.conf"
 done
+install -m 0755 /tmp/oco-builder/refresh.sh /usr/local/bin/oco-prepare
 chown -R builder:builder .
 rm -rf hostdir/sources/* masterdir-*/var/cache/xbps/*
