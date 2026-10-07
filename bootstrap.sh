@@ -63,12 +63,6 @@ command -v cosign >/dev/null 2>&1 || {
 	echo "==> ERROR: cosign was not installed from ${OCO_REPO}" >&2
 	exit 1
 }
-for md in /void-packages/masterdir-*/; do
-	[ -d "$md" ] || continue
-	mkdir -p "${md}etc/xbps.d" "${md}var/db/xbps/keys"
-	cp /var/db/xbps/keys/*.plist "${md}var/db/xbps/keys/"
-	echo "repository=${OCO_REPO}" > "${md}etc/xbps.d/oco.conf"
-done
 install -m 0755 /tmp/oco-builder/refresh.sh /usr/local/bin/oco-prepare
 chown -R builder:builder .
 rm -rf hostdir/sources/* masterdir-*/var/cache/xbps/*
