@@ -1,9 +1,5 @@
 #!/bin/sh
-# Builds an oco-builder bootstrap environment inside a void-{glibc,musl}-full
-# container. Run by .github/workflows/build.yml, which mounts this repo at
-# /tmp/oco-builder and passes:
-#   NAME       target arch (x86_64 | x86_64-musl | aarch64 | aarch64-musl)
-#   EXTRA_PKGS optional extra host packages (e.g. pandoc on x86_64)
+# Builds an oco-builder bootstrap environment inside a void-{glibc,musl}-full container
 set -eu
 
 OCO_REPO="https://repo.osowoso.org/${NAME}"
@@ -35,6 +31,18 @@ curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/
  curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
 	-o "/var/db/xbps/keys/${OCO_KEY}"
 cp "/var/db/xbps/keys/${OCO_KEY}" /void-packages/common/repo-keys/
+OCO_URL="${OCO_REPO%/*}"
+for _rrf in repos-remote.conf repos-remote-musl.conf repos-remote-aarch64.conf repos-remote-aarch64-musl.conf; do
+        case "$_rrf" in
+                repos-remote.conf)             _repo="$OCO_URL/x86_64" ;;
+                repos-remote-musl.conf)        _repo="$OCO_URL/x86_64-musl" ;;
+                repos-remote-aarch64.conf)     _repo="$OCO_URL/aarch64" ;;
+                repos-remote-aarch64-musl.conf) _repo="$OCO_URL/aarch64-musl" ;;
+        esac
+        f=/void-packages/etc/xbps.d/$_rrf
+        [ -f "$f" ] || continue
+        sed -i "1i repository=${_repo}" "$f"
+done
 xbps_install_retry() {
 	local max=3 delay=5 i
 	for i in $(seq 1 $max); do
@@ -50,11 +58,6 @@ command -v cosign >/dev/null 2>&1 || {
 	echo "==> ERROR: cosign was not installed from ${OCO_REPO}" >&2
 	exit 1
 }
-for md in /void-packages/masterdir-*/; do
-	[ -d "$md" ] || continue
-	mkdir -p "${md}etc/xbps.d" "${md}var/db/xbps/keys"
-	cp /var/db/xbps/keys/*.plist "${md}var/db/xbps/keys/"
-	echo "repository=${OCO_REPO}" > "${md}etc/xbps.d/oco.conf"
-done
+install -m 0755 /tmp/oco-builder/oco-prepare /usr/local/bin/oco-prepare
 chown -R builder:builder .
 rm -rf hostdir/sources/* masterdir-*/var/cache/xbps/*
