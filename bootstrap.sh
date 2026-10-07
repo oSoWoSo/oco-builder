@@ -58,8 +58,6 @@ PEM_B64=$(base64 -w0 /tmp/oco-pub.pem)
 } > "$OCO_KEY"
 rm -f "$OCO_KEY_RAW" /tmp/oco-pub.der /tmp/oco-pub.pem
 
-cp "${OCO_KEY}" common/repo-keys/
-
 xbps_install_retry() {
 	local max=3 delay=5 i
 	for i in $(seq 1 $max); do
