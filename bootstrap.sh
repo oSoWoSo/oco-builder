@@ -34,28 +34,11 @@ EOF
 echo "repository=${OCO_REPO}" > /etc/xbps.d/oco.conf
 
 mkdir -p /var/db/xbps/keys
-# The public key shipped in oco-repo-key.plist is DER-encoded, but xbps can
-# only verify package signatures with a PEM key plist (see lib/verifysig.c
-# PEM_read_bio_RSA_PUBKEY). Normalize it the same way xbps does on key import.
 OCO_KEY="/var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist"
-OCO_KEY_RAW=/tmp/oco-repo-key.plist
 curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist" \
-	-o "$OCO_KEY_RAW" ||
+	-o "$OCO_KEY" ||
  curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
-	-o "$OCO_KEY_RAW"
-tr -d '[:space:]' < "$OCO_KEY_RAW" |
-	sed -n 's/.*<data>\(.*\)<\/data>.*/\1/p' | base64 -d > /tmp/oco-pub.der
-openssl pkey -pubin -inform DER -in /tmp/oco-pub.der -outform PEM -out /tmp/oco-pub.pem
-PEM_B64=$(base64 -w0 /tmp/oco-pub.pem)
-{
-	printf '<?xml version="1.0" encoding="UTF-8"?>\n'
-	printf '<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'
-	printf '<plist version="1.0">\n<dict>\n\t<key>public-key</key>\n\t<data>%s</data>\n' "$PEM_B64"
-	printf '\t<key>public-key-size</key>\n\t<integer>4096</integer>\n'
-	printf '\t<key>signature-by</key>\n\t<string>oSoWoSo &lt;mail@osowoso.org&gt;</string>\n'
-	printf '</dict>\n</plist>\n'
-} > "$OCO_KEY"
-rm -f "$OCO_KEY_RAW" /tmp/oco-pub.der /tmp/oco-pub.pem
+	-o "$OCO_KEY"
 
 xbps_install_retry() {
 	local max=3 delay=5 i
