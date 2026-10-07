@@ -56,8 +56,9 @@ PEM_B64=$(base64 -w0 /tmp/oco-pub.pem)
 	printf '\t<key>signature-by</key>\n\t<string>oSoWoSo &lt;mail@osowoso.org&gt;</string>\n'
 	printf '</dict>\n</plist>\n'
 } > "$OCO_KEY"
-cp "$OCO_KEY" common/repo-keys/
 rm -f "$OCO_KEY_RAW" /tmp/oco-pub.der /tmp/oco-pub.pem
+
+cp "${OCO_KEY}" common/repo-keys/
 
 xbps_install_retry() {
 	local max=3 delay=5 i
