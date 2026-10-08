@@ -9,7 +9,7 @@ sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
 xbps-install -Syu xbps
 xbps-install -yu
 # shellcheck disable=SC2086
-xbps-install -y sudo bash curl fuse3 git python3 xtools zstd ${EXTRA_PKGS:-}
+xbps-install -y sudo bash curl fuse3 git nodejs python3 xtools zstd ${EXTRA_PKGS:-}
 useradd -G xbuilder -M builder
 git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
 chown -R builder:builder /void-packages
@@ -57,6 +57,15 @@ xbps-install -R "$OCO_REPO" -y cosign surfer-cli
 command -v cosign >/dev/null 2>&1 || {
 	echo "==> ERROR: cosign was not installed from ${OCO_REPO}" >&2
 	exit 1
+}
+command -v surfer >/dev/null 2>&1 || {
+	echo "==> ERROR: surfer-cli was not installed from ${OCO_REPO}" >&2
+	echo "Installing using nodejs"
+    npm install -g @cloudron/surfer
+    command -v surfer >/dev/null 2>&1 || {
+	    echo "==> ERROR: cosign was not installed from nodejs" >&2
+	    exit 1
+    }
 }
 install -m 0755 /tmp/oco-builder/oco-prepare /usr/local/bin/oco-prepare
 chown -R builder:builder .
