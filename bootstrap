@@ -9,7 +9,7 @@ sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
 xbps-install -Syu xbps
 xbps-install -yu
 # shellcheck disable=SC2086
-xbps-install -y sudo bash curl fuse3 git nodejs python3 xtools zstd ${EXTRA_PKGS:-}
+xbps-install -y sudo bash curl git nodejs python3 xtools zstd ${EXTRA_PKGS:-}
 useradd -G xbuilder -M builder
 git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
 chown -R builder:builder /void-packages
@@ -43,6 +43,16 @@ for _rrf in repos-remote.conf repos-remote-musl.conf repos-remote-aarch64.conf r
         [ -f "$f" ] || continue
         sed -i "1i repository=${_repo}" "$f"
 done
+xbps_install_retry() {
+	local max=3 delay=5 i
+	for i in $(seq 1 $max); do
+		echo "==> xbps-install -S -y (attempt $i/$max)"
+		xbps-install -S -y && return 0
+		[ "$i" -lt "$max" ] && sleep "$delay"
+	done
+	return 1
+}
+xbps_install_retry
 xbps-install -R "$OCO_REPO" -y cosign
 command -v cosign >/dev/null 2>&1 || {
 	echo "==> ERROR: cosign was not installed from ${OCO_REPO}" >&2
