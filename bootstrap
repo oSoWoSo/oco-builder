@@ -53,7 +53,7 @@ xbps_install_retry() {
 	return 1
 }
 xbps_install_retry
-xbps-install -R "$OCO_REPO" -y cosign
+xbps-install -R "$OCO_REPO" -y cosign surfer-cli
 command -v cosign >/dev/null 2>&1 || {
 	echo "==> ERROR: cosign was not installed from ${OCO_REPO}" >&2
 	exit 1
