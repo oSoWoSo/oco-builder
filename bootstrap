@@ -1,9 +1,5 @@
 #!/bin/sh
-# Builds an oco-builder bootstrap environment inside a void-{glibc,musl}-full
-# container. Run by .github/workflows/build.yml, which mounts this repo at
-# /tmp/oco-builder and passes:
-#   NAME       target arch (x86_64 | x86_64-musl | aarch64 | aarch64-musl)
-#   EXTRA_PKGS optional extra host packages (e.g. pandoc on x86_64)
+# Builds an oco-builder bootstrap environment inside a void-{glibc,musl}-full container
 set -eu
 
 OCO_REPO="https://repo.osowoso.org/${NAME}"
@@ -13,7 +9,7 @@ sed -i 's|repo-default|repo-ci|g' /etc/xbps.d/*-repository-*.conf
 xbps-install -Syu xbps
 xbps-install -yu
 # shellcheck disable=SC2086
-xbps-install -y sudo bash curl git python3 xtools zstd ${EXTRA_PKGS:-}
+xbps-install -y sudo bash curl git nodejs python3 xtools zstd ${EXTRA_PKGS:-}
 useradd -G xbuilder -M builder
 git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
 chown -R builder:builder /void-packages
@@ -35,10 +31,6 @@ curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/
  curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
 	-o "/var/db/xbps/keys/${OCO_KEY}"
 cp "/var/db/xbps/keys/${OCO_KEY}" /void-packages/common/repo-keys/
-# Make the OCO repo visible to builds: chroot.sh regenerates the masterdir
-# (and cross-root) repo list from these files, so injecting here once, at
-# image build, is what lets every CI job resolve OCO packages — for the host
-# arch *and* for cross-builds, which read the target arch's repos-remote file.
 OCO_URL="${OCO_REPO%/*}"
 for _rrf in repos-remote.conf repos-remote-musl.conf repos-remote-aarch64.conf repos-remote-aarch64-musl.conf; do
         case "$_rrf" in
@@ -65,6 +57,16 @@ xbps-install -R "$OCO_REPO" -y cosign
 command -v cosign >/dev/null 2>&1 || {
 	echo "==> ERROR: cosign was not installed from ${OCO_REPO}" >&2
 	exit 1
+}
+xbps-install -R "$OCO_REPO" -y surfer-cli || true
+command -v surfer >/dev/null 2>&1 || {
+	echo "==> ERROR: surfer-cli was not installed from ${OCO_REPO}" >&2
+	echo "Installing using nodejs"
+    npm install -g @cloudron/surfer
+    command -v surfer >/dev/null 2>&1 || {
+	    echo "==> ERROR: surfer-cli was not installed from nodejs" >&2
+	    exit 1
+    }
 }
 install -m 0755 /tmp/oco-builder/oco-prepare /usr/local/bin/oco-prepare
 chown -R builder:builder .
