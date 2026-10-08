@@ -1,6 +1,11 @@
 name: Build bootstrap images
 
 on:
+  push:
+    paths:
+     - .github/workflows/build.yml
+     - bootstrap
+     - oco-prepare
   schedule:
     - cron: '0 3 * * *'
     - cron: '0 15 * * *'
@@ -9,6 +14,10 @@ on:
 permissions:
   contents: read
   packages: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
