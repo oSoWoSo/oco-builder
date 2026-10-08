@@ -31,6 +31,8 @@ Each image starts from the official `ghcr.io/void-linux/void-*-full` base, runs 
 In addition to the void base + `xbps-src`, the images include:
 
 - `sudo`, `bash`, `curl`, `git` -- core build needs
+- `nodejs` -- for surfer-cli
 - `python3` -- runtime for repodata helpers in `oSoWoSo/oco`
+- `surfer-cli` -- for managing repository
 - `zstd` -- CLI for round-tripping zstd-compressed repodata
 - `pandoc` -- README → HTML for the oco website generator (x86\_64 only; not packaged for all archs in void)
