@@ -43,17 +43,7 @@ for _rrf in repos-remote.conf repos-remote-musl.conf repos-remote-aarch64.conf r
         [ -f "$f" ] || continue
         sed -i "1i repository=${_repo}" "$f"
 done
-xbps_install_retry() {
-	local max=3 delay=5 i
-	for i in $(seq 1 $max); do
-		echo "==> xbps-install -S -y (attempt $i/$max)"
-		xbps-install -S -y && return 0
-		[ "$i" -lt "$max" ] && sleep "$delay"
-	done
-	return 1
-}
-xbps_install_retry
-xbps-install -R "$OCO_REPO" -y cosign surfer-cli
+xbps-install -R "$OCO_REPO" -y cosign
 command -v cosign >/dev/null 2>&1 || {
 	echo "==> ERROR: cosign was not installed from ${OCO_REPO}" >&2
 	exit 1
@@ -64,7 +54,7 @@ command -v surfer >/dev/null 2>&1 || {
 	echo "Installing using nodejs"
     npm install -g @cloudron/surfer
     command -v surfer >/dev/null 2>&1 || {
-	    echo "==> ERROR: cosign was not installed from nodejs" >&2
+	    echo "==> ERROR: surfer-cli was not installed from nodejs" >&2
 	    exit 1
     }
 }
