@@ -70,36 +70,42 @@ jobs:
             "${{ matrix.base }}" \
             sh /tmp/oco-builder/bootstrap
 
-      - name: Stage glibc runtime for aarch64-musl
-        if: matrix.name == 'aarch64-musl'
+      - name: Stage glibc runtime for musl images
+        if: matrix.name == 'aarch64-musl' || matrix.name == 'x86_64-musl'
         run: |
+          case '${{ matrix.name }}' in
+            aarch64-musl) LOADER=/lib/ld-linux-aarch64.so.1 ;;
+            x86_64-musl)  LOADER=/lib/ld-linux-x86-64.so.2 ;;
+            *) echo "unsupported musl image: ${{ matrix.name }}" >&2; exit 1 ;;
+          esac
           STAGE="$RUNNER_TEMP/oco-glibc-root"
           mkdir -p "$STAGE/usr/lib/oco-glibc" "$STAGE/etc" "$STAGE/lib"
           docker run --rm \
             --volume "$HOME/extracted/externals:/__e:ro" \
             --volume "$STAGE:/stage" \
+            -e LOADER="$LOADER" \
             ghcr.io/void-linux/void-glibc-full:latest \
             sh -euc '
-              /lib/ld-linux-aarch64.so.1 --list /__e/node24/bin/node
-              /lib/ld-linux-aarch64.so.1 --list /__e/node24/bin/node |
+              "$LOADER" --list /__e/node24/bin/node
+              "$LOADER" --list /__e/node24/bin/node |
                 awk '"'"'$2 == "=>" && $3 ~ /^\// { print $3 } $1 ~ /^\// { print $1 }'"'"' |
                 sort -u |
                 while IFS= read -r library; do
                   test -f "$library"
                   cp -L "$library" "/stage/usr/lib/oco-glibc/$(basename "$library")"
                 done
-              cp -L /lib/ld-linux-aarch64.so.1 /stage/lib/ld-linux-aarch64.so.1
+              cp -L "$LOADER" "/stage/lib/${LOADER##*/}"
               printf "%s\n" /usr/lib/oco-glibc > /stage/etc/ld.so.conf
               ldconfig -r /stage
             '
           docker cp "$STAGE/usr/lib/oco-glibc" bootstrap:/usr/lib/oco-glibc
-          docker cp "$STAGE/lib/ld-linux-aarch64.so.1" bootstrap:/lib/ld-linux-aarch64.so.1
+          docker cp "$STAGE/lib/${LOADER##*/}" "bootstrap:$LOADER"
           docker cp "$STAGE/etc/ld.so.cache" bootstrap:/etc/ld.so.cache
 
       - name: Commit image
         run: |
           IMAGE="ghcr.io/osowoso/oco-builder-${{ matrix.name }}"
-          docker commit --change='WORKDIR /void-packages' bootstrap "${IMAGE}:latest"
+          docker commit --change='WORKDIR /oco-tree' bootstrap "${IMAGE}:latest"
           docker tag "${IMAGE}:latest" "${IMAGE}:${{ github.run_id }}"
           docker tag "${IMAGE}:latest" "${IMAGE}:${{ matrix.base_tag }}"
 
@@ -111,14 +117,14 @@ jobs:
           # that oco/.github/workflows/build.yml builds every package
           # with.  Fail here instead.
           smoke_args=()
-          if [ "${{ matrix.name }}" = aarch64-musl ]; then
+          if [ "${{ matrix.name }}" = aarch64-musl ] || [ "${{ matrix.name }}" = x86_64-musl ]; then
             smoke_args+=(--volume "$HOME/extracted/externals:/__e:ro")
           fi
           docker run --rm --pull=never \
             "${smoke_args[@]}" \
             "$IMAGE" bash -euc '
-            test -x /void-packages/xbps-src || {
-              echo "missing /void-packages/xbps-src" >&2; exit 1; }
+            test -x /oco-tree/xbps-src || {
+              echo "missing /oco-tree/xbps-src" >&2; exit 1; }
             for tool in xbps-uhelper oco-prepare; do
               command -v "$tool" >/dev/null || {
                 echo "missing $tool" >&2; exit 1; }
@@ -132,9 +138,14 @@ jobs:
               test -x "$loader" || {
                 echo "missing glibc compatibility loader: $loader" >&2; exit 1; }
             fi
-            if [ "${{ matrix.name }}" = aarch64-musl ]; then
-              test -x /lib/ld-musl-aarch64.so.1 || {
-                echo "missing musl loader: /lib/ld-musl-aarch64.so.1" >&2; exit 1; }
+            if [ "${{ matrix.name }}" = aarch64-musl ] || [ "${{ matrix.name }}" = x86_64-musl ]; then
+              case "$(uname -m)" in
+                aarch64) musl_loader=/lib/ld-musl-aarch64.so.1 ;;
+                x86_64) musl_loader=/lib/ld-musl-x86_64.so.1 ;;
+                *) echo "unsupported musl architecture: $(uname -m)" >&2; exit 1 ;;
+              esac
+              test -x "$musl_loader" || {
+                echo "missing musl loader: $musl_loader" >&2; exit 1; }
 
               test -x /__e/node24/bin/node || {
                 echo "missing GitHub Actions Node 24 runtime" >&2; exit 1; }
@@ -142,9 +153,9 @@ jobs:
                 "require(\"fs\"); require(\"child_process\"); console.log(\"Node 24 action runtime OK\")"
             fi
             xbps-uhelper cmpver 1.0 1.0
-            test -d /void-packages/hostdir
-            compgen -G "/void-packages/masterdir-*" >/dev/null
-            compgen -G "/void-packages/common/repo-keys/*.plist" >/dev/null
+            test -d /oco-tree/hostdir
+            compgen -G "/oco-tree/masterdir-*" >/dev/null
+            compgen -G "/oco-tree/common/repo-keys/*.plist" >/dev/null
             test -f /etc/xbps.d/oco.conf
           '
 

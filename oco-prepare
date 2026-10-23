@@ -1,6 +1,36 @@
 #!/bin/sh
-# Per-job refresh inside an oco-builder image
+# Per-job refresh inside an oco-builder image.
+#
+# Sets up the ethereal chroot-style and prepares the disposable container:
+# ethereal(1) uses the container rootfs itself as the xbps-src masterdir,
+# needs no mount namespaces and no CAP_SYS_ADMIN, and must run as root
+# (xbps-src only allows that with XBPS_ALLOW_CHROOT_BREAKOUT=yes).
+# See oSoWoSo/oco:.github/scripts/ci/prepare-container.sh for details.
 set -eu
 
+# ethereal manages the /void-packages path itself (it symlinks it to the
+# tree before every invocation and empties it afterwards), so the real
+# tree lives at /oco-tree.  Older images baked it at /void-packages.
+if [ -d /void-packages ] && [ ! -L /void-packages ] && [ ! -d /oco-tree ]; then
+        mv /void-packages /oco-tree
+fi
+
+# ethereal requires $XBPS_DISTDIR/masterdir to be a symlink to /
+rm -rf /oco-tree/masterdir
+ln -s / /oco-tree/masterdir
+
+# Append the ethereal settings; etc/conf already carries XBPS_CCACHE.
+grep -q '^XBPS_CHROOT_CMD=ethereal$' /oco-tree/etc/conf 2>/dev/null ||
+        printf '%s\n' 'XBPS_CHROOT_CMD=ethereal' \
+                'XBPS_ALLOW_CHROOT_BREAKOUT=yes' >> /oco-tree/etc/conf
+
+# Refresh the container and provide the build toolchain: with ethereal
+# CHROOT_READY is always set, so xbps-src never installs base-chroot
+# into the container by itself.
 xbps-install -Suvy
-sudo -Eu builder sh -c 'cd /void-packages && ./xbps-src bootstrap-update'
+xbps-install -y base-chroot
+
+# Initialize the "masterdir" (the container itself) and update the
+# bootstrap toolchain.
+cd /oco-tree
+./xbps-src bootstrap-update

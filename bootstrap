@@ -28,12 +28,15 @@ case "$NAME" in
 	*) MUSL_COMPAT= ;;
 esac
 # shellcheck disable=SC2086
-xbps_install_retry -y sudo bash curl git nodejs python3 xtools zstd ${MUSL_COMPAT} ${EXTRA_PKGS:-}
+xbps_install_retry -y sudo bash curl git nodejs python3 xtools zstd base-chroot ${MUSL_COMPAT} ${EXTRA_PKGS:-}
 
+# Keep the tree OUT of /void-packages: the ethereal chroot-style manages
+# that path itself (symlink to the tree, emptied after every invocation)
+# and re-executes the inner xbps-src as /void-packages/xbps-src.
 useradd -G xbuilder -M builder
-git clone --depth 1 https://github.com/void-linux/void-packages.git /void-packages
-chown -R builder:builder /void-packages
-cd /void-packages
+git clone --depth 1 https://github.com/void-linux/void-packages.git /oco-tree
+chown -R builder:builder /oco-tree
+cd /oco-tree
 sudo -Eu builder common/travis/set_mirror.sh
 sudo -Eu builder common/travis/prepare.sh
 common/travis/fetch-xtools.sh
@@ -44,13 +47,13 @@ XBPS_UPDATE_CHECK_VERBOSE=yes
 EOF
 
 echo "repository=${OCO_REPO}" > /etc/xbps.d/oco.conf
-mkdir -p /var/db/xbps/keys /void-packages/common/repo-keys
+mkdir -p /var/db/xbps/keys /oco-tree/common/repo-keys
 OCO_KEY="df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist"
 curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/oco/OCO/oco-repo-key.plist" \
 	-o "/var/db/xbps/keys/${OCO_KEY}" ||
  curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
 	-o "/var/db/xbps/keys/${OCO_KEY}"
-cp "/var/db/xbps/keys/${OCO_KEY}" /void-packages/common/repo-keys/
+cp "/var/db/xbps/keys/${OCO_KEY}" /oco-tree/common/repo-keys/
 OCO_URL="${OCO_REPO%/*}"
 for _rrf in repos-remote.conf repos-remote-musl.conf repos-remote-aarch64.conf repos-remote-aarch64-musl.conf; do
         case "$_rrf" in
@@ -59,7 +62,7 @@ for _rrf in repos-remote.conf repos-remote-musl.conf repos-remote-aarch64.conf r
                 repos-remote-aarch64.conf)     _repo="$OCO_URL/aarch64" ;;
                 repos-remote-aarch64-musl.conf) _repo="$OCO_URL/aarch64-musl" ;;
         esac
-        f=/void-packages/etc/xbps.d/$_rrf
+        f=/oco-tree/etc/xbps.d/$_rrf
         [ -f "$f" ] || continue
         sed -i "1i repository=${_repo}" "$f"
 done
