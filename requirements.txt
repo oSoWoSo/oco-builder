@@ -1,2 +1,0 @@
-# Runtime dependencies for .github/feedsparser.py
-feedparser==6.0.14

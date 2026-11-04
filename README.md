@@ -42,14 +42,10 @@ for GitHub Actions' glibc-linked ARM Node runtime; other images are unchanged.
 x86\_64 only
 - `pandoc` -- README → HTML for the oco website generator
 
-## CI secrets
+## Package update feed
 
-`.github/workflows/feeds.yml` reads these. Only `BOT` is required; the rest
-are optional and an unset token means "fetch anonymously", which is what
-happened before they existed.
-
-| Secret | Used for |
-|--------|----------|
-| `BOT` | `gh` CLI operations against the OCO repo — filing and updating `package-update` issues — and the GitHub entry in `feedsparser.py`'s `HOST_AUTH` |
-| `CODEBERG` | Codeberg feeds (`Authorization: token`) |
-| `GITLAB` | GitLab feeds (`PRIVATE-TOKEN`) |
+The package update feed CI previously lived here (`.github/feedsparser.py` +
+`.github/workflows/feeds.yml`). It has moved to the
+[OCO repository](https://github.com/oSoWoSo/oco) (`.github/workflows/feed-update.yml`,
+`src/feedsparser.py`) and is deprecated here: those files are gone and the
+workflow no longer runs from this repo.
