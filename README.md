@@ -31,9 +31,11 @@ Each image starts from the official `ghcr.io/void-linux/void-*-full` base — pi
 In addition to the void base + `xbps-src`, the images include:
 
 - `sudo`, `bash`, `curl`, `git` -- core build needs
+- `github-cli` -- for github
 - `nodejs` -- for surfer-cli
 - `python3` -- runtime for repodata helpers in `oSoWoSo/oco`
 - `surfer-cli` -- for managing repository
+- `xtools` -- xbps helpers
 - `zstd` -- CLI for round-tripping zstd-compressed repodata
 
 The `aarch64-musl` image additionally preloads a small `fcntl64` ABI bridge
