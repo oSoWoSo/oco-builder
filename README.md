@@ -43,11 +43,3 @@ for GitHub Actions' glibc-linked ARM Node runtime; other images are unchanged.
 
 x86\_64 only
 - `pandoc` -- README → HTML for the oco website generator
-
-## Package update feed
-
-The package update feed CI previously lived here (`.github/feedsparser.py` +
-`.github/workflows/feeds.yml`). It has moved to the
-[OCO repository](https://github.com/oSoWoSo/oco) (`.github/workflows/feed-update.yml`,
-`src/feedsparser.py`) and is deprecated here: those files are gone and the
-workflow no longer runs from this repo.
